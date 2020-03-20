@@ -1,4 +1,4 @@
-use crate::transpiled::ooura_fft8g::*;
+
 
 extern "C" {
     #[no_mangle]
@@ -161,7 +161,7 @@ pub type aubio_fft_t = _aubio_fft_t;
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_fft(mut winsize: uint_t)
+pub unsafe extern "C" fn new_aubio_fft(winsize: uint_t)
  -> *mut aubio_fft_t {
     let mut s: *mut aubio_fft_t =
         calloc(::std::mem::size_of::<aubio_fft_t>() as u64,
@@ -220,7 +220,7 @@ pub unsafe extern "C" fn new_aubio_fft(mut winsize: uint_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_fft(mut s: *mut aubio_fft_t) {
+pub unsafe extern "C" fn del_aubio_fft(s: *mut aubio_fft_t) {
     /* destroy data */
     // using FFTW3
     // using ACCELERATE
@@ -241,9 +241,9 @@ pub unsafe extern "C" fn del_aubio_fft(mut s: *mut aubio_fft_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_do(mut s: *mut aubio_fft_t,
-                                      mut input: *const fvec_t,
-                                      mut spectrum: *mut cvec_t) {
+pub unsafe extern "C" fn aubio_fft_do(s: *mut aubio_fft_t,
+                                      input: *const fvec_t,
+                                      spectrum: *mut cvec_t) {
     aubio_fft_do_complex(s, input, (*s).compspec);
     aubio_fft_get_spectrum((*s).compspec, spectrum);
 }
@@ -255,9 +255,9 @@ pub unsafe extern "C" fn aubio_fft_do(mut s: *mut aubio_fft_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_rdo(mut s: *mut aubio_fft_t,
-                                       mut spectrum: *const cvec_t,
-                                       mut output: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_fft_rdo(s: *mut aubio_fft_t,
+                                       spectrum: *const cvec_t,
+                                       output: *mut fvec_t) {
     aubio_fft_get_realimag(spectrum, (*s).compspec);
     aubio_fft_rdo_complex(s, (*s).compspec, output);
 }
@@ -269,9 +269,9 @@ pub unsafe extern "C" fn aubio_fft_rdo(mut s: *mut aubio_fft_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_do_complex(mut s: *mut aubio_fft_t,
-                                              mut input: *const fvec_t,
-                                              mut compspec: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_fft_do_complex(s: *mut aubio_fft_t,
+                                              input: *const fvec_t,
+                                              compspec: *mut fvec_t) {
     let mut i: uint_t = 0;
     i = 0 as i32 as uint_t;
     while i < (*s).winsize {
@@ -316,14 +316,14 @@ pub unsafe extern "C" fn aubio_fft_do_complex(mut s: *mut aubio_fft_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_rdo_complex(mut s: *mut aubio_fft_t,
-                                               mut compspec: *const fvec_t,
-                                               mut output: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_fft_rdo_complex(s: *mut aubio_fft_t,
+                                               compspec: *const fvec_t,
+                                               output: *mut fvec_t) {
     let mut i: uint_t = 0;
     // using ACCELERATE
     // using Intel IPP
     // using OOURA
-    let mut scale: smpl_t =
+    let scale: smpl_t =
         (2.0f64 / (*s).winsize as f64) as smpl_t;
     *(*s).out.offset(0 as i32 as isize) =
         *(*compspec).data.offset(0 as i32 as isize);
@@ -360,8 +360,8 @@ pub unsafe extern "C" fn aubio_fft_rdo_complex(mut s: *mut aubio_fft_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_get_spectrum(mut compspec: *const fvec_t,
-                                                mut spectrum: *mut cvec_t) {
+pub unsafe extern "C" fn aubio_fft_get_spectrum(compspec: *const fvec_t,
+                                                spectrum: *mut cvec_t) {
     aubio_fft_get_phas(compspec, spectrum);
     aubio_fft_get_norm(compspec, spectrum);
 }
@@ -372,8 +372,8 @@ pub unsafe extern "C" fn aubio_fft_get_spectrum(mut compspec: *const fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_get_realimag(mut spectrum: *const cvec_t,
-                                                mut compspec: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_fft_get_realimag(spectrum: *const cvec_t,
+                                                compspec: *mut fvec_t) {
     aubio_fft_get_imag(spectrum, compspec);
     aubio_fft_get_real(spectrum, compspec);
 }
@@ -384,8 +384,8 @@ pub unsafe extern "C" fn aubio_fft_get_realimag(mut spectrum: *const cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_get_phas(mut compspec: *const fvec_t,
-                                            mut spectrum: *mut cvec_t) {
+pub unsafe extern "C" fn aubio_fft_get_phas(compspec: *const fvec_t,
+                                            spectrum: *mut cvec_t) {
     let mut i: uint_t = 0;
     if *(*compspec).data.offset(0 as i32 as isize) <
            0 as i32 as f32 {
@@ -431,8 +431,8 @@ pub unsafe extern "C" fn aubio_fft_get_phas(mut compspec: *const fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_get_norm(mut compspec: *const fvec_t,
-                                            mut spectrum: *mut cvec_t) {
+pub unsafe extern "C" fn aubio_fft_get_norm(compspec: *const fvec_t,
+                                            spectrum: *mut cvec_t) {
     let mut i: uint_t = 0 as i32 as uint_t;
     *(*spectrum).norm.offset(0 as i32 as isize) =
         fabsf(*(*compspec).data.offset(0 as i32 as isize));
@@ -466,8 +466,8 @@ pub unsafe extern "C" fn aubio_fft_get_norm(mut compspec: *const fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_get_imag(mut spectrum: *const cvec_t,
-                                            mut compspec: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_fft_get_imag(spectrum: *const cvec_t,
+                                            compspec: *mut fvec_t) {
     let mut i: uint_t = 0;
     i = 1 as i32 as uint_t;
     while i <
@@ -492,8 +492,8 @@ pub unsafe extern "C" fn aubio_fft_get_imag(mut spectrum: *const cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_fft_get_real(mut spectrum: *const cvec_t,
-                                            mut compspec: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_fft_get_real(spectrum: *const cvec_t,
+                                            compspec: *mut fvec_t) {
     let mut i: uint_t = 0;
     i = 0 as i32 as uint_t;
     while i <

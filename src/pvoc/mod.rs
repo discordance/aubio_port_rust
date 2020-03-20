@@ -26,8 +26,8 @@ impl Pvoc {
     pub fn from_signal(
         &mut self,
         input_buffer: &[f32],
-        mut norm: &mut [f32],
-        mut phas: &mut [f32],
+        norm: &mut [f32],
+        phas: &mut [f32],
     ) {
         assert!(input_buffer.len() == self.hop_size);
 

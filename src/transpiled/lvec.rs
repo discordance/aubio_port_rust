@@ -125,7 +125,7 @@ pub struct lvec_t {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_lvec(mut length: uint_t) -> *mut lvec_t {
+pub unsafe extern "C" fn new_lvec(length: uint_t) -> *mut lvec_t {
     let mut s: *mut lvec_t = 0 as *mut lvec_t;
     if length as sint_t <= 0 as i32 { return 0 as *mut lvec_t }
     s =
@@ -145,7 +145,7 @@ pub unsafe extern "C" fn new_lvec(mut length: uint_t) -> *mut lvec_t {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_lvec(mut s: *mut lvec_t) {
+pub unsafe extern "C" fn del_lvec(s: *mut lvec_t) {
     free((*s).data as *mut core::ffi::c_void);
     free(s as *mut core::ffi::c_void);
 }
@@ -157,8 +157,8 @@ pub unsafe extern "C" fn del_lvec(mut s: *mut lvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn lvec_set_sample(mut s: *mut lvec_t, mut data: lsmp_t,
-                                         mut position: uint_t) {
+pub unsafe extern "C" fn lvec_set_sample(s: *mut lvec_t, data: lsmp_t,
+                                         position: uint_t) {
     *(*s).data.offset(position as isize) = data;
 }
 /* * read sample value in a buffer
@@ -168,8 +168,8 @@ pub unsafe extern "C" fn lvec_set_sample(mut s: *mut lvec_t, mut data: lsmp_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn lvec_get_sample(mut s: *mut lvec_t,
-                                         mut position: uint_t) -> lsmp_t {
+pub unsafe extern "C" fn lvec_get_sample(s: *mut lvec_t,
+                                         position: uint_t) -> lsmp_t {
     return *(*s).data.offset(position as isize);
 }
 /* * read data from a buffer
@@ -178,7 +178,7 @@ pub unsafe extern "C" fn lvec_get_sample(mut s: *mut lvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn lvec_get_data(mut s: *const lvec_t) -> *mut lsmp_t {
+pub unsafe extern "C" fn lvec_get_data(s: *const lvec_t) -> *mut lsmp_t {
     return (*s).data;
 }
 /* * print out lvec data
@@ -188,7 +188,7 @@ pub unsafe extern "C" fn lvec_get_data(mut s: *const lvec_t) -> *mut lsmp_t {
 */
 /* helper functions */
 #[no_mangle]
-pub unsafe extern "C" fn lvec_print(mut s: *const lvec_t) {
+pub unsafe extern "C" fn lvec_print(s: *const lvec_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).length {
@@ -207,7 +207,7 @@ pub unsafe extern "C" fn lvec_print(mut s: *const lvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn lvec_set_all(mut s: *mut lvec_t, mut val: smpl_t) {
+pub unsafe extern "C" fn lvec_set_all(s: *mut lvec_t, val: smpl_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).length {
@@ -221,7 +221,7 @@ pub unsafe extern "C" fn lvec_set_all(mut s: *mut lvec_t, mut val: smpl_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn lvec_zeros(mut s: *mut lvec_t) {
+pub unsafe extern "C" fn lvec_zeros(s: *mut lvec_t) {
     lvec_set_all(s, 0.0f64 as smpl_t);
 }
 /* * set all elements to ones
@@ -230,6 +230,6 @@ pub unsafe extern "C" fn lvec_zeros(mut s: *mut lvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn lvec_ones(mut s: *mut lvec_t) {
+pub unsafe extern "C" fn lvec_ones(s: *mut lvec_t) {
     lvec_set_all(s, 1.0f64 as smpl_t);
 }

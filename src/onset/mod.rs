@@ -126,7 +126,7 @@ mod tests {
     #[test]
     fn onset_test() {
         // load a test sig
-        let mut reader = hound::WavReader::open("test_files/tech_s_16.wav").unwrap();
+        let reader = hound::WavReader::open("test_files/tech_s_16.wav").unwrap();
 
         let samples: Vec<f32> = reader
             .into_samples::<i16>()

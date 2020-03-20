@@ -317,11 +317,11 @@ Appendix :
     w[] and ip[] are compatible with all routines.
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_ooura_cdft(mut n: i32,
-                                          mut isgn: i32,
-                                          mut a: *mut smpl_t,
-                                          mut ip: *mut i32,
-                                          mut w: *mut smpl_t) {
+pub unsafe extern "C" fn aubio_ooura_cdft(n: i32,
+                                          isgn: i32,
+                                          a: *mut smpl_t,
+                                          ip: *mut i32,
+                                          w: *mut smpl_t) {
     if n > *ip.offset(0 as i32 as isize) << 2 as i32 {
         makewt(n >> 2 as i32, ip, w);
     }
@@ -336,11 +336,11 @@ pub unsafe extern "C" fn aubio_ooura_cdft(mut n: i32,
     } else if n == 4 as i32 { cftfsub(n, a, w); };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_ooura_rdft(mut n: i32,
-                                          mut isgn: i32,
-                                          mut a: *mut smpl_t,
-                                          mut ip: *mut i32,
-                                          mut w: *mut smpl_t) {
+pub unsafe extern "C" fn aubio_ooura_rdft(n: i32,
+                                          isgn: i32,
+                                          a: *mut smpl_t,
+                                          ip: *mut i32,
+                                          w: *mut smpl_t) {
     let mut nw: i32 = 0;
     let mut nc: i32 = 0;
     let mut xi: smpl_t = 0.;
@@ -381,11 +381,11 @@ pub unsafe extern "C" fn aubio_ooura_rdft(mut n: i32,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_ooura_ddct(mut n: i32,
-                                          mut isgn: i32,
-                                          mut a: *mut smpl_t,
-                                          mut ip: *mut i32,
-                                          mut w: *mut smpl_t) {
+pub unsafe extern "C" fn aubio_ooura_ddct(n: i32,
+                                          isgn: i32,
+                                          a: *mut smpl_t,
+                                          ip: *mut i32,
+                                          w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut nw: i32 = 0;
     let mut nc: i32 = 0;
@@ -443,11 +443,11 @@ pub unsafe extern "C" fn aubio_ooura_ddct(mut n: i32,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_ooura_ddst(mut n: i32,
-                                          mut isgn: i32,
-                                          mut a: *mut smpl_t,
-                                          mut ip: *mut i32,
-                                          mut w: *mut smpl_t) {
+pub unsafe extern "C" fn aubio_ooura_ddst(n: i32,
+                                          isgn: i32,
+                                          a: *mut smpl_t,
+                                          ip: *mut i32,
+                                          w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut nw: i32 = 0;
     let mut nc: i32 = 0;
@@ -505,11 +505,11 @@ pub unsafe extern "C" fn aubio_ooura_ddst(mut n: i32,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_ooura_dfct(mut n: i32,
-                                          mut a: *mut smpl_t,
-                                          mut t: *mut smpl_t,
-                                          mut ip: *mut i32,
-                                          mut w: *mut smpl_t) {
+pub unsafe extern "C" fn aubio_ooura_dfct(n: i32,
+                                          a: *mut smpl_t,
+                                          t: *mut smpl_t,
+                                          ip: *mut i32,
+                                          w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut l: i32 = 0;
@@ -637,11 +637,11 @@ pub unsafe extern "C" fn aubio_ooura_dfct(mut n: i32,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_ooura_dfst(mut n: i32,
-                                          mut a: *mut smpl_t,
-                                          mut t: *mut smpl_t,
-                                          mut ip: *mut i32,
-                                          mut w: *mut smpl_t) {
+pub unsafe extern "C" fn aubio_ooura_dfst(n: i32,
+                                          a: *mut smpl_t,
+                                          t: *mut smpl_t,
+                                          ip: *mut i32,
+                                          w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut l: i32 = 0;
@@ -753,8 +753,8 @@ pub unsafe extern "C" fn aubio_ooura_dfst(mut n: i32,
     *a.offset(0 as i32 as isize) = 0 as i32 as smpl_t;
 }
 /* -------- initializing routines -------- */
-unsafe extern "C" fn makewt(mut nw: i32, mut ip: *mut i32,
-                            mut w: *mut smpl_t) {
+unsafe extern "C" fn makewt(nw: i32, ip: *mut i32,
+                            w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut nwh: i32 = 0;
     let mut delta: smpl_t = 0.;
@@ -795,8 +795,8 @@ unsafe extern "C" fn makewt(mut nw: i32, mut ip: *mut i32,
         }
     };
 }
-unsafe extern "C" fn makect(mut nc: i32, mut ip: *mut i32,
-                            mut c: *mut smpl_t) {
+unsafe extern "C" fn makect(nc: i32, ip: *mut i32,
+                            c: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut nch: i32 = 0;
     let mut delta: smpl_t = 0.;
@@ -819,8 +819,8 @@ unsafe extern "C" fn makect(mut nc: i32, mut ip: *mut i32,
     };
 }
 /* -------- child routines -------- */
-unsafe extern "C" fn bitrv2(mut n: i32, mut ip: *mut i32,
-                            mut a: *mut smpl_t) {
+unsafe extern "C" fn bitrv2(n: i32, ip: *mut i32,
+                            a: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut j1: i32 = 0;
     let mut k: i32 = 0;
@@ -935,8 +935,8 @@ unsafe extern "C" fn bitrv2(mut n: i32, mut ip: *mut i32,
         }
     };
 }
-unsafe extern "C" fn bitrv2conj(mut n: i32, mut ip: *mut i32,
-                                mut a: *mut smpl_t) {
+unsafe extern "C" fn bitrv2conj(n: i32, ip: *mut i32,
+                                a: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut j1: i32 = 0;
     let mut k: i32 = 0;
@@ -1066,8 +1066,8 @@ unsafe extern "C" fn bitrv2conj(mut n: i32, mut ip: *mut i32,
         }
     };
 }
-unsafe extern "C" fn cftfsub(mut n: i32, mut a: *mut smpl_t,
-                             mut w: *mut smpl_t) {
+unsafe extern "C" fn cftfsub(n: i32, a: *mut smpl_t,
+                             w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut j1: i32 = 0;
     let mut j2: i32 = 0;
@@ -1140,8 +1140,8 @@ unsafe extern "C" fn cftfsub(mut n: i32, mut a: *mut smpl_t,
         }
     };
 }
-unsafe extern "C" fn cftbsub(mut n: i32, mut a: *mut smpl_t,
-                             mut w: *mut smpl_t) {
+unsafe extern "C" fn cftbsub(n: i32, a: *mut smpl_t,
+                             w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut j1: i32 = 0;
     let mut j2: i32 = 0;
@@ -1317,8 +1317,8 @@ unsafe extern "C" fn cftbsub(mut n: i32, mut a: *mut smpl_t,
         }
     };
 }
-unsafe extern "C" fn cft1st(mut n: i32, mut a: *mut smpl_t,
-                            mut w: *mut smpl_t) {
+unsafe extern "C" fn cft1st(n: i32, a: *mut smpl_t,
+                            w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut k1: i32 = 0;
     let mut wn4r: smpl_t = 0.;
@@ -1677,8 +1677,8 @@ unsafe extern "C" fn cft1st(mut n: i32, mut a: *mut smpl_t,
         }
     };
 }
-unsafe extern "C" fn cftmdl(mut n: i32, mut l: i32,
-                            mut a: *mut smpl_t, mut w: *mut smpl_t) {
+unsafe extern "C" fn cftmdl(n: i32, l: i32,
+                            a: *mut smpl_t, w: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut j1: i32 = 0;
     let mut j2: i32 = 0;
@@ -2025,8 +2025,8 @@ unsafe extern "C" fn cftmdl(mut n: i32, mut l: i32,
         }
     };
 }
-unsafe extern "C" fn rftfsub(mut n: i32, mut a: *mut smpl_t,
-                             mut nc: i32, mut c: *mut smpl_t) {
+unsafe extern "C" fn rftfsub(n: i32, a: *mut smpl_t,
+                             nc: i32, c: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut kk: i32 = 0;
@@ -2064,8 +2064,8 @@ unsafe extern "C" fn rftfsub(mut n: i32, mut a: *mut smpl_t,
         j += 2 as i32
     };
 }
-unsafe extern "C" fn rftbsub(mut n: i32, mut a: *mut smpl_t,
-                             mut nc: i32, mut c: *mut smpl_t) {
+unsafe extern "C" fn rftbsub(n: i32, a: *mut smpl_t,
+                             nc: i32, c: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut kk: i32 = 0;
@@ -2107,8 +2107,8 @@ unsafe extern "C" fn rftbsub(mut n: i32, mut a: *mut smpl_t,
     *a.offset((m + 1 as i32) as isize) =
         -*a.offset((m + 1 as i32) as isize);
 }
-unsafe extern "C" fn dctsub(mut n: i32, mut a: *mut smpl_t,
-                            mut nc: i32, mut c: *mut smpl_t) {
+unsafe extern "C" fn dctsub(n: i32, a: *mut smpl_t,
+                            nc: i32, c: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut kk: i32 = 0;
@@ -2135,8 +2135,8 @@ unsafe extern "C" fn dctsub(mut n: i32, mut a: *mut smpl_t,
     let ref mut fresh22 = *a.offset(m as isize);
     *fresh22 *= *c.offset(0 as i32 as isize);
 }
-unsafe extern "C" fn dstsub(mut n: i32, mut a: *mut smpl_t,
-                            mut nc: i32, mut c: *mut smpl_t) {
+unsafe extern "C" fn dstsub(n: i32, a: *mut smpl_t,
+                            nc: i32, c: *mut smpl_t) {
     let mut j: i32 = 0;
     let mut k: i32 = 0;
     let mut kk: i32 = 0;

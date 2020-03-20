@@ -259,7 +259,7 @@ pub struct cvec_t {
 */
 /* * spectral description structure */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_sum(mut s: *const cvec_t) -> smpl_t {
+pub unsafe extern "C" fn cvec_sum(s: *const cvec_t) -> smpl_t {
     let mut j: uint_t = 0;
     let mut tmp: smpl_t = 0.0f64 as smpl_t;
     j = 0 as i32 as uint_t;
@@ -270,11 +270,11 @@ pub unsafe extern "C" fn cvec_sum(mut s: *const cvec_t) -> smpl_t {
     return tmp;
 }
 #[no_mangle]
-pub unsafe extern "C" fn cvec_mean(mut s: *const cvec_t) -> smpl_t {
+pub unsafe extern "C" fn cvec_mean(s: *const cvec_t) -> smpl_t {
     return cvec_sum(s) / (*s).length as smpl_t;
 }
 #[no_mangle]
-pub unsafe extern "C" fn cvec_centroid(mut spec: *const cvec_t) -> smpl_t {
+pub unsafe extern "C" fn cvec_centroid(spec: *const cvec_t) -> smpl_t {
     let mut sum: smpl_t = 0.0f64 as smpl_t;
     let mut sc: smpl_t = 0.0f64 as smpl_t;
     let mut j: uint_t = 0;
@@ -291,8 +291,8 @@ pub unsafe extern "C" fn cvec_centroid(mut spec: *const cvec_t) -> smpl_t {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn cvec_moment(mut spec: *const cvec_t,
-                                     mut order: uint_t) -> smpl_t {
+pub unsafe extern "C" fn cvec_moment(spec: *const cvec_t,
+                                     order: uint_t) -> smpl_t {
     let mut sum: smpl_t = 0.0f64 as smpl_t;
     let mut centroid: smpl_t = 0.0f64 as smpl_t;
     let mut sc: smpl_t = 0.0f64 as smpl_t;
@@ -332,22 +332,22 @@ pub unsafe extern "C" fn cvec_moment(mut spec: *const cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_specdesc_centroid(mut o: *mut aubio_specdesc_t,
-                                                 mut spec: *const cvec_t,
-                                                 mut desc: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_specdesc_centroid(_o: *mut aubio_specdesc_t,
+                                                 spec: *const cvec_t,
+                                                 desc: *mut fvec_t) {
     *(*desc).data.offset(0 as i32 as isize) = cvec_centroid(spec);
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_specdesc_spread(mut o: *mut aubio_specdesc_t,
-                                               mut spec: *const cvec_t,
-                                               mut desc: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_specdesc_spread(_o: *mut aubio_specdesc_t,
+                                               spec: *const cvec_t,
+                                               desc: *mut fvec_t) {
     *(*desc).data.offset(0 as i32 as isize) =
         cvec_moment(spec, 2 as i32 as uint_t);
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_specdesc_skewness(mut o: *mut aubio_specdesc_t,
-                                                 mut spec: *const cvec_t,
-                                                 mut desc: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_specdesc_skewness(_o: *mut aubio_specdesc_t,
+                                                 spec: *const cvec_t,
+                                                 desc: *mut fvec_t) {
     let mut spread: smpl_t = 0.;
     spread = cvec_moment(spec, 2 as i32 as uint_t);
     if spread == 0 as i32 as f32 {
@@ -360,9 +360,9 @@ pub unsafe extern "C" fn aubio_specdesc_skewness(mut o: *mut aubio_specdesc_t,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_specdesc_kurtosis(mut o: *mut aubio_specdesc_t,
-                                                 mut spec: *const cvec_t,
-                                                 mut desc: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_specdesc_kurtosis(_o: *mut aubio_specdesc_t,
+                                                 spec: *const cvec_t,
+                                                 desc: *mut fvec_t) {
     let mut spread: smpl_t = 0.;
     spread = cvec_moment(spec, 2 as i32 as uint_t);
     if spread == 0 as i32 as f32 {
@@ -375,9 +375,9 @@ pub unsafe extern "C" fn aubio_specdesc_kurtosis(mut o: *mut aubio_specdesc_t,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_specdesc_slope(mut o: *mut aubio_specdesc_t,
-                                              mut spec: *const cvec_t,
-                                              mut desc: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_specdesc_slope(_o: *mut aubio_specdesc_t,
+                                              spec: *const cvec_t,
+                                              desc: *mut fvec_t) {
     let mut j: uint_t = 0;
     let mut norm: smpl_t = 0 as i32 as smpl_t;
     let mut sum: smpl_t = 0.0f64 as smpl_t;
@@ -425,9 +425,9 @@ pub unsafe extern "C" fn aubio_specdesc_slope(mut o: *mut aubio_specdesc_t,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_specdesc_decrease(mut o: *mut aubio_specdesc_t,
-                                                 mut spec: *const cvec_t,
-                                                 mut desc: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_specdesc_decrease(_o: *mut aubio_specdesc_t,
+                                                 spec: *const cvec_t,
+                                                 desc: *mut fvec_t) {
     let mut j: uint_t = 0;
     let mut sum: smpl_t = 0.;
     sum = cvec_sum(spec);
@@ -452,9 +452,9 @@ pub unsafe extern "C" fn aubio_specdesc_decrease(mut o: *mut aubio_specdesc_t,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_specdesc_rolloff(mut o: *mut aubio_specdesc_t,
-                                                mut spec: *const cvec_t,
-                                                mut desc: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_specdesc_rolloff(_o: *mut aubio_specdesc_t,
+                                                spec: *const cvec_t,
+                                                desc: *mut fvec_t) {
     let mut j: uint_t = 0;
     let mut cumsum: smpl_t = 0.;
     let mut rollsum: smpl_t = 0.;

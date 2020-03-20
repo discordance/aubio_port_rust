@@ -1,6 +1,6 @@
 use crate::transpiled::fft::aubio_fft_t;
-use crate::transpiled::mathutils::aubio_is_power_of_two;
-use crate::transpiled::fvec::fvec_ones;
+
+
 use crate::transpiled::log::aubio_log;
 
 extern "C" {
@@ -235,9 +235,9 @@ pub type aubio_pvoc_t = _aubio_pvoc_t;
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_pvoc_do(mut pv: *mut aubio_pvoc_t,
-                                       mut datanew: *const fvec_t,
-                                       mut fftgrain: *mut cvec_t) {
+pub unsafe extern "C" fn aubio_pvoc_do(pv: *mut aubio_pvoc_t,
+                                       datanew: *const fvec_t,
+                                       fftgrain: *mut cvec_t) {
     /* slide  */
     aubio_pvoc_swapbuffers(pv, datanew);
     /* windowing */
@@ -260,9 +260,9 @@ pub unsafe extern "C" fn aubio_pvoc_do(mut pv: *mut aubio_pvoc_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_pvoc_rdo(mut pv: *mut aubio_pvoc_t,
-                                        mut fftgrain: *mut cvec_t,
-                                        mut synthnew: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_pvoc_rdo(pv: *mut aubio_pvoc_t,
+                                        fftgrain: *mut cvec_t,
+                                        synthnew: *mut fvec_t) {
     /* calculate rfft */
     aubio_fft_rdo((*pv).fft, fftgrain, (*pv).synth);
     /* unshift */
@@ -283,7 +283,7 @@ pub unsafe extern "C" fn aubio_pvoc_rdo(mut pv: *mut aubio_pvoc_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_pvoc(mut win_s: uint_t, mut hop_s: uint_t)
+pub unsafe extern "C" fn new_aubio_pvoc(win_s: uint_t, hop_s: uint_t)
  -> *mut aubio_pvoc_t {
     let mut pv: *mut aubio_pvoc_t =
         calloc(::std::mem::size_of::<aubio_pvoc_t>() as u64,
@@ -371,8 +371,8 @@ pub unsafe extern "C" fn new_aubio_pvoc(mut win_s: uint_t, mut hop_s: uint_t)
 
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_pvoc_set_window(mut pv: *mut aubio_pvoc_t,
-                                               mut window: *const char_t)
+pub unsafe extern "C" fn aubio_pvoc_set_window(pv: *mut aubio_pvoc_t,
+                                               window: *const char_t)
  -> uint_t {
     return fvec_set_window((*pv).w, window as *mut char_t);
 }
@@ -382,7 +382,7 @@ pub unsafe extern "C" fn aubio_pvoc_set_window(mut pv: *mut aubio_pvoc_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_pvoc(mut pv: *mut aubio_pvoc_t) {
+pub unsafe extern "C" fn del_aubio_pvoc(pv: *mut aubio_pvoc_t) {
     del_fvec((*pv).data);
     del_fvec((*pv).synth);
     del_fvec((*pv).dataold);
@@ -393,12 +393,12 @@ pub unsafe extern "C" fn del_aubio_pvoc(mut pv: *mut aubio_pvoc_t) {
 }
 /* * size of memory to hop_s */
 /* * returns data and dataold slided by hop_s */
-unsafe extern "C" fn aubio_pvoc_swapbuffers(mut pv: *mut aubio_pvoc_t,
-                                            mut new: *const fvec_t) {
+unsafe extern "C" fn aubio_pvoc_swapbuffers(pv: *mut aubio_pvoc_t,
+                                            new: *const fvec_t) {
     /* some convenience pointers */
-    let mut data: *mut smpl_t = (*(*pv).data).data;
-    let mut dataold: *mut smpl_t = (*(*pv).dataold).data;
-    let mut datanew: *mut smpl_t = (*new).data;
+    let data: *mut smpl_t = (*(*pv).data).data;
+    let dataold: *mut smpl_t = (*(*pv).dataold).data;
+    let datanew: *mut smpl_t = (*new).data;
     let mut i: uint_t = 0;
     i = 0 as i32 as uint_t;
     while i < (*pv).end {
@@ -419,13 +419,13 @@ unsafe extern "C" fn aubio_pvoc_swapbuffers(mut pv: *mut aubio_pvoc_t,
     };
 }
 /* * do additive synthesis from 'old' and 'cur' */
-unsafe extern "C" fn aubio_pvoc_addsynth(mut pv: *mut aubio_pvoc_t,
-                                         mut synth_new: *mut fvec_t) {
+unsafe extern "C" fn aubio_pvoc_addsynth(pv: *mut aubio_pvoc_t,
+                                         synth_new: *mut fvec_t) {
     let mut i: uint_t = 0;
     /* some convenience pointers */
-    let mut synth: *mut smpl_t = (*(*pv).synth).data;
-    let mut synthold: *mut smpl_t = (*(*pv).synthold).data;
-    let mut synthnew: *mut smpl_t = (*synth_new).data;
+    let synth: *mut smpl_t = (*(*pv).synth).data;
+    let synthold: *mut smpl_t = (*(*pv).synthold).data;
+    let synthnew: *mut smpl_t = (*synth_new).data;
     /* put new result in synthnew */
     i = 0 as i32 as uint_t;
     while i < (*pv).hop_s {
@@ -470,7 +470,7 @@ unsafe extern "C" fn aubio_pvoc_addsynth(mut pv: *mut aubio_pvoc_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_pvoc_get_win(mut pv: *mut aubio_pvoc_t)
+pub unsafe extern "C" fn aubio_pvoc_get_win(pv: *mut aubio_pvoc_t)
  -> uint_t {
     return (*pv).win_s;
 }
@@ -480,7 +480,7 @@ pub unsafe extern "C" fn aubio_pvoc_get_win(mut pv: *mut aubio_pvoc_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_pvoc_get_hop(mut pv: *mut aubio_pvoc_t)
+pub unsafe extern "C" fn aubio_pvoc_get_hop(pv: *mut aubio_pvoc_t)
  -> uint_t {
     return (*pv).hop_s;
 }

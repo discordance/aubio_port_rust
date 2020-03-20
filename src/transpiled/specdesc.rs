@@ -432,9 +432,9 @@ unsafe extern "C" fn __inline_isnanl(mut __x: f64) -> i32 {
 /* Energy based onset detection function */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_energy(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    _o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
@@ -448,9 +448,9 @@ pub unsafe extern "C" fn aubio_specdesc_energy(
 /* High Frequency Content onset detection function */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_hfc(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    _o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
@@ -464,12 +464,12 @@ pub unsafe extern "C" fn aubio_specdesc_hfc(
 /* Complex Domain Method onset detection function */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_complex(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
-    let mut nbins: uint_t = (*fftgrain).length;
+    let nbins: uint_t = (*fftgrain).length;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
     j = 0 as i32 as uint_t;
     while j < nbins {
@@ -502,12 +502,12 @@ pub unsafe extern "C" fn aubio_specdesc_complex(
 /* Phase Based Method onset detection function */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_phase(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
-    let mut nbins: uint_t = (*fftgrain).length;
+    let nbins: uint_t = (*fftgrain).length;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
     *(*(*o).dev1).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
     j = 0 as i32 as uint_t;
@@ -538,9 +538,9 @@ pub unsafe extern "C" fn aubio_specdesc_phase(
 /* weighted phase */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_wphase(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut i: uint_t = 0;
     aubio_specdesc_phase(o, fftgrain, onset);
@@ -560,12 +560,12 @@ pub unsafe extern "C" fn aubio_specdesc_wphase(
 /* Spectral difference method onset detection function */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_specdiff(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
-    let mut nbins: uint_t = (*fftgrain).length;
+    let nbins: uint_t = (*fftgrain).length;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
     j = 0 as i32 as uint_t;
     while j < nbins {
@@ -594,9 +594,9 @@ pub unsafe extern "C" fn aubio_specdesc_specdiff(
  * negative (1.+) and infinite values (+1.e-10) */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_kl(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
@@ -629,9 +629,9 @@ pub unsafe extern "C" fn aubio_specdesc_kl(
  * negative (1.+) and infinite values (+1.e-10) */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_mkl(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
@@ -661,9 +661,9 @@ pub unsafe extern "C" fn aubio_specdesc_mkl(
 /* Spectral flux */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_specflux(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut j: uint_t = 0;
     *(*onset).data.offset(0 as i32 as isize) = 0.0f64 as smpl_t;
@@ -690,9 +690,9 @@ pub unsafe extern "C" fn aubio_specdesc_specflux(
 /* Generic function pointing to the choosen one */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_specdesc_do(
-    mut o: *mut aubio_specdesc_t,
-    mut fftgrain: *const cvec_t,
-    mut onset: *mut fvec_t,
+    o: *mut aubio_specdesc_t,
+    fftgrain: *const cvec_t,
+    onset: *mut fvec_t,
 ) {
     (*o).funcpointer.expect("non-null function pointer")(o, fftgrain, onset);
 }
@@ -715,14 +715,14 @@ pub unsafe extern "C" fn aubio_specdesc_do(
  */
 #[no_mangle]
 pub unsafe extern "C" fn new_aubio_specdesc(
-    mut onset_mode: *const char_t,
-    mut size: uint_t,
+    onset_mode: *const char_t,
+    size: uint_t,
 ) -> *mut aubio_specdesc_t {
     let mut o: *mut aubio_specdesc_t = calloc(
         ::std::mem::size_of::<aubio_specdesc_t>() as u64,
         1 as i32 as u64,
     ) as *mut aubio_specdesc_t;
-    let mut rsize: uint_t = size
+    let rsize: uint_t = size
         .wrapping_div(2 as i32 as u32)
         .wrapping_add(1 as i32 as u32);
     let mut onset_type: aubio_specdesc_type = aubio_onset_energy;
@@ -978,7 +978,7 @@ pub unsafe extern "C" fn new_aubio_specdesc(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_specdesc(mut o: *mut aubio_specdesc_t) {
+pub unsafe extern "C" fn del_aubio_specdesc(o: *mut aubio_specdesc_t) {
     match (*o).onset_type as u32 {
         3 => {
             del_fvec((*o).oldmag);

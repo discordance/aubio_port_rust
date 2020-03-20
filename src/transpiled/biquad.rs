@@ -239,15 +239,15 @@ pub struct lvec_t {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_set_biquad(mut f: *mut aubio_filter_t,
-                                                 mut b0: lsmp_t,
-                                                 mut b1: lsmp_t,
-                                                 mut b2: lsmp_t,
-                                                 mut a1: lsmp_t,
-                                                 mut a2: lsmp_t) -> uint_t {
-    let mut order: uint_t = aubio_filter_get_order(f);
-    let mut bs: *mut lvec_t = aubio_filter_get_feedforward(f);
-    let mut as_0: *mut lvec_t = aubio_filter_get_feedback(f);
+pub unsafe extern "C" fn aubio_filter_set_biquad(f: *mut aubio_filter_t,
+                                                 b0: lsmp_t,
+                                                 b1: lsmp_t,
+                                                 b2: lsmp_t,
+                                                 a1: lsmp_t,
+                                                 a2: lsmp_t) -> uint_t {
+    let order: uint_t = aubio_filter_get_order(f);
+    let bs: *mut lvec_t = aubio_filter_get_feedforward(f);
+    let as_0: *mut lvec_t = aubio_filter_get_feedback(f);
     if order != 3 as i32 as u32 {
         aubio_log(AUBIO_LOG_ERR as i32,
                   b"AUBIO ERROR: order of biquad filter must be 3, not %d\n\x00"
@@ -272,13 +272,13 @@ pub unsafe extern "C" fn aubio_filter_set_biquad(mut f: *mut aubio_filter_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_filter_biquad(mut b0: lsmp_t,
-                                                 mut b1: lsmp_t,
-                                                 mut b2: lsmp_t,
-                                                 mut a1: lsmp_t,
-                                                 mut a2: lsmp_t)
+pub unsafe extern "C" fn new_aubio_filter_biquad(b0: lsmp_t,
+                                                 b1: lsmp_t,
+                                                 b2: lsmp_t,
+                                                 a1: lsmp_t,
+                                                 a2: lsmp_t)
  -> *mut aubio_filter_t {
-    let mut f: *mut aubio_filter_t =
+    let f: *mut aubio_filter_t =
         new_aubio_filter(3 as i32 as uint_t);
     aubio_filter_set_biquad(f, b0, b1, b2, a1, a2);
     return f;

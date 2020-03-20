@@ -400,14 +400,14 @@ pub type aubio_peakpicker_t = _aubio_peakpicker_t;
  * is slightly more permissive than the offline one, and yelds to an increase
  * of false positives. best  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_peakpicker_do(mut p: *mut aubio_peakpicker_t,
-                                             mut onset: *mut fvec_t,
-                                             mut out: *mut fvec_t) {
-    let mut onset_keep: *mut fvec_t = (*p).onset_keep;
-    let mut onset_proc: *mut fvec_t = (*p).onset_proc;
-    let mut onset_peek: *mut fvec_t = (*p).onset_peek;
-    let mut thresholded: *mut fvec_t = (*p).thresholded;
-    let mut scratch: *mut fvec_t = (*p).scratch;
+pub unsafe extern "C" fn aubio_peakpicker_do(p: *mut aubio_peakpicker_t,
+                                             onset: *mut fvec_t,
+                                             out: *mut fvec_t) {
+    let onset_keep: *mut fvec_t = (*p).onset_keep;
+    let onset_proc: *mut fvec_t = (*p).onset_proc;
+    let onset_peek: *mut fvec_t = (*p).onset_peek;
+    let thresholded: *mut fvec_t = (*p).thresholded;
+    let scratch: *mut fvec_t = (*p).scratch;
     let mut mean: smpl_t = 0.0f64 as smpl_t;
     let mut median: smpl_t = 0.0f64 as smpl_t;
     let mut j: uint_t = 0 as i32 as uint_t;
@@ -452,7 +452,7 @@ pub unsafe extern "C" fn aubio_peakpicker_do(mut p: *mut aubio_peakpicker_t,
  * after smoothing
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_peakpicker_get_thresholded_input(mut p:
+pub unsafe extern "C" fn aubio_peakpicker_get_thresholded_input(p:
                                                                     *mut aubio_peakpicker_t)
  -> *mut fvec_t {
     return (*p).thresholded;
@@ -461,14 +461,14 @@ pub unsafe extern "C" fn aubio_peakpicker_get_thresholded_input(mut p:
 #[no_mangle]
 pub unsafe extern "C" fn aubio_peakpicker_set_threshold(mut p:
                                                             *mut aubio_peakpicker_t,
-                                                        mut threshold: smpl_t)
+                                                        threshold: smpl_t)
  -> uint_t {
     (*p).threshold = threshold;
     return AUBIO_OK as i32 as uint_t;
 }
 /* * get peak picking threshold */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_peakpicker_get_threshold(mut p:
+pub unsafe extern "C" fn aubio_peakpicker_get_threshold(p:
                                                             *mut aubio_peakpicker_t)
  -> smpl_t {
     return (*p).threshold;
@@ -477,7 +477,7 @@ pub unsafe extern "C" fn aubio_peakpicker_get_threshold(mut p:
 #[no_mangle]
 pub unsafe extern "C" fn aubio_peakpicker_set_thresholdfn(mut p:
                                                               *mut aubio_peakpicker_t,
-                                                          mut thresholdfn:
+                                                          thresholdfn:
                                                               aubio_thresholdfn_t)
  -> uint_t {
     (*p).thresholdfn = thresholdfn;
@@ -485,7 +485,7 @@ pub unsafe extern "C" fn aubio_peakpicker_set_thresholdfn(mut p:
 }
 /* * get peak picker thresholding function */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_peakpicker_get_thresholdfn(mut p:
+pub unsafe extern "C" fn aubio_peakpicker_get_thresholdfn(p:
                                                               *mut aubio_peakpicker_t)
  -> aubio_thresholdfn_t {
     return (*p).thresholdfn;
@@ -544,7 +544,7 @@ pub unsafe extern "C" fn new_aubio_peakpicker() -> *mut aubio_peakpicker_t {
 }
 /* * destroy peak picker structure */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_peakpicker(mut p:
+pub unsafe extern "C" fn del_aubio_peakpicker(p:
                                                   *mut aubio_peakpicker_t) {
     del_aubio_filter((*p).biquad);
     del_fvec((*p).onset_keep);

@@ -244,9 +244,9 @@ pub type aubio_filter_t = _aubio_filter_t;
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_do_outplace(mut f: *mut aubio_filter_t,
-                                                  mut in_0: *const fvec_t,
-                                                  mut out: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_filter_do_outplace(f: *mut aubio_filter_t,
+                                                  in_0: *const fvec_t,
+                                                  out: *mut fvec_t) {
     fvec_copy(in_0, out);
     aubio_filter_do(f, out);
 }
@@ -257,15 +257,15 @@ pub unsafe extern "C" fn aubio_filter_do_outplace(mut f: *mut aubio_filter_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_do(mut f: *mut aubio_filter_t,
-                                         mut in_0: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_filter_do(f: *mut aubio_filter_t,
+                                         in_0: *mut fvec_t) {
     let mut j: uint_t = 0;
     let mut l: uint_t = 0;
-    let mut order: uint_t = (*f).order;
-    let mut x: *mut lsmp_t = (*(*f).x).data;
-    let mut y: *mut lsmp_t = (*(*f).y).data;
-    let mut a: *mut lsmp_t = (*(*f).a).data;
-    let mut b: *mut lsmp_t = (*(*f).b).data;
+    let order: uint_t = (*f).order;
+    let x: *mut lsmp_t = (*(*f).x).data;
+    let y: *mut lsmp_t = (*(*f).y).data;
+    let a: *mut lsmp_t = (*(*f).a).data;
+    let b: *mut lsmp_t = (*(*f).b).data;
     j = 0 as i32 as uint_t;
     while j < (*in_0).length {
         /* new input */
@@ -311,11 +311,11 @@ pub unsafe extern "C" fn aubio_filter_do(mut f: *mut aubio_filter_t,
 */
 /* The rough way: reset memory of filter between each run to avoid end effects. */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_do_filtfilt(mut f: *mut aubio_filter_t,
-                                                  mut in_0: *mut fvec_t,
-                                                  mut tmp: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_filter_do_filtfilt(f: *mut aubio_filter_t,
+                                                  in_0: *mut fvec_t,
+                                                  tmp: *mut fvec_t) {
     let mut j: uint_t = 0;
-    let mut length: uint_t = (*in_0).length;
+    let length: uint_t = (*in_0).length;
     /* apply filtering */
     aubio_filter_do(f, in_0);
     aubio_filter_do_reset(f);
@@ -352,7 +352,7 @@ pub unsafe extern "C" fn aubio_filter_do_filtfilt(mut f: *mut aubio_filter_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_get_feedback(mut f:
+pub unsafe extern "C" fn aubio_filter_get_feedback(f:
                                                        *const aubio_filter_t)
  -> *mut lvec_t {
     return (*f).a;
@@ -365,7 +365,7 @@ pub unsafe extern "C" fn aubio_filter_get_feedback(mut f:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_get_feedforward(mut f:
+pub unsafe extern "C" fn aubio_filter_get_feedforward(f:
                                                           *const aubio_filter_t)
  -> *mut lvec_t {
     return (*f).b;
@@ -378,7 +378,7 @@ pub unsafe extern "C" fn aubio_filter_get_feedforward(mut f:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_get_order(mut f: *const aubio_filter_t)
+pub unsafe extern "C" fn aubio_filter_get_order(f: *const aubio_filter_t)
  -> uint_t {
     return (*f).order;
 }
@@ -390,7 +390,7 @@ pub unsafe extern "C" fn aubio_filter_get_order(mut f: *const aubio_filter_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_get_samplerate(mut f:
+pub unsafe extern "C" fn aubio_filter_get_samplerate(f:
                                                          *const aubio_filter_t)
  -> uint_t {
     return (*f).samplerate;
@@ -406,7 +406,7 @@ pub unsafe extern "C" fn aubio_filter_get_samplerate(mut f:
 #[no_mangle]
 pub unsafe extern "C" fn aubio_filter_set_samplerate(mut f:
                                                          *mut aubio_filter_t,
-                                                     mut samplerate: uint_t)
+                                                     samplerate: uint_t)
  -> uint_t {
     (*f).samplerate = samplerate;
     return AUBIO_OK as i32 as uint_t;
@@ -417,7 +417,7 @@ pub unsafe extern "C" fn aubio_filter_set_samplerate(mut f:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_filter_do_reset(mut f: *mut aubio_filter_t) {
+pub unsafe extern "C" fn aubio_filter_do_reset(f: *mut aubio_filter_t) {
     lvec_zeros((*f).x);
     lvec_zeros((*f).y);
 }
@@ -432,7 +432,7 @@ pub unsafe extern "C" fn aubio_filter_do_reset(mut f: *mut aubio_filter_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_filter(mut order: uint_t)
+pub unsafe extern "C" fn new_aubio_filter(order: uint_t)
  -> *mut aubio_filter_t {
     let mut f: *mut aubio_filter_t =
         calloc(::std::mem::size_of::<aubio_filter_t>() as u64,
@@ -459,7 +459,7 @@ pub unsafe extern "C" fn new_aubio_filter(mut order: uint_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_filter(mut f: *mut aubio_filter_t) {
+pub unsafe extern "C" fn del_aubio_filter(f: *mut aubio_filter_t) {
     del_lvec((*f).a);
     del_lvec((*f).b);
     del_lvec((*f).x);

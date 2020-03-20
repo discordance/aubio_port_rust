@@ -685,8 +685,8 @@ pub type aubio_onset_t = _aubio_onset_t;
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_do(
     mut o: *mut aubio_onset_t,
-    mut input: *const fvec_t,
-    mut onset: *mut fvec_t,
+    input: *const fvec_t,
+    onset: *mut fvec_t,
 ) {
     let mut isonset: smpl_t = 0 as i32 as smpl_t;
     aubio_pvoc_do((*o).pv, input, (*o).fftgrain);
@@ -709,7 +709,7 @@ pub unsafe extern "C" fn aubio_onset_do(
             isonset = 0 as i32 as smpl_t
         } else {
             // we have an onset
-            let mut new_onset: uint_t = (*o).total_frames.wrapping_add(floorf(
+            let new_onset: uint_t = (*o).total_frames.wrapping_add(floorf(
                 ((isonset * (*o).hop_size as f32) as f64 + 0.5f64) as f32,
             ) as uint_t);
             // check if last onset time was more than minioi ago
@@ -734,7 +734,7 @@ pub unsafe extern "C" fn aubio_onset_do(
         // we are at the beginning of the file
         // and we don't find silence
         if aubio_silence_detection(input, (*o).silence) == 0 as i32 as u32 {
-            let mut new_onset_0: uint_t = (*o).total_frames;
+            let new_onset_0: uint_t = (*o).total_frames;
             if (*o).total_frames == 0 as i32 as u32
                 || (*o).last_onset.wrapping_add((*o).minioi) < new_onset_0
             {
@@ -754,7 +754,7 @@ pub unsafe extern "C" fn aubio_onset_do(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_last(mut o: *const aubio_onset_t) -> uint_t {
+pub unsafe extern "C" fn aubio_onset_get_last(o: *const aubio_onset_t) -> uint_t {
     return (*o).last_onset.wrapping_sub((*o).delay);
 }
 /* * get the time of the latest onset detected, in seconds
@@ -765,7 +765,7 @@ pub unsafe extern "C" fn aubio_onset_get_last(mut o: *const aubio_onset_t) -> ui
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_last_s(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_last_s(o: *const aubio_onset_t) -> smpl_t {
     return aubio_onset_get_last(o) as f32 / (*o).samplerate as smpl_t;
 }
 /* * get the time of the latest onset detected, in milliseconds
@@ -776,7 +776,7 @@ pub unsafe extern "C" fn aubio_onset_get_last_s(mut o: *const aubio_onset_t) -> 
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_last_ms(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_last_ms(o: *const aubio_onset_t) -> smpl_t {
     return (aubio_onset_get_last_s(o) as f64 * 1000.0f64) as smpl_t;
 }
 /* * set onset detection adaptive whitening
@@ -790,7 +790,7 @@ pub unsafe extern "C" fn aubio_onset_get_last_ms(mut o: *const aubio_onset_t) ->
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_awhitening(
     mut o: *mut aubio_onset_t,
-    mut enable: uint_t,
+    enable: uint_t,
 ) -> uint_t {
     (*o).apply_awhitening = if enable == 1 as i32 as u32 {
         1 as i32
@@ -807,7 +807,7 @@ pub unsafe extern "C" fn aubio_onset_set_awhitening(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_awhitening(mut o: *mut aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_awhitening(o: *mut aubio_onset_t) -> smpl_t {
     return (*o).apply_awhitening as smpl_t;
 }
 /* * set or disable log compression
@@ -821,7 +821,7 @@ pub unsafe extern "C" fn aubio_onset_get_awhitening(mut o: *mut aubio_onset_t) -
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_compression(
     mut o: *mut aubio_onset_t,
-    mut lambda: smpl_t,
+    lambda: smpl_t,
 ) -> uint_t {
     if (lambda as f64) < 0.0f64 {
         return AUBIO_FAIL as i32 as uint_t;
@@ -842,7 +842,7 @@ pub unsafe extern "C" fn aubio_onset_set_compression(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_compression(mut o: *mut aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_compression(o: *mut aubio_onset_t) -> smpl_t {
     return if (*o).apply_compression != 0 {
         (*o).lambda_compression
     } else {
@@ -858,7 +858,7 @@ pub unsafe extern "C" fn aubio_onset_get_compression(mut o: *mut aubio_onset_t) 
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_silence(
     mut o: *mut aubio_onset_t,
-    mut silence: smpl_t,
+    silence: smpl_t,
 ) -> uint_t {
     (*o).silence = silence;
     return AUBIO_OK as i32 as uint_t;
@@ -871,7 +871,7 @@ pub unsafe extern "C" fn aubio_onset_set_silence(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_silence(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_silence(o: *const aubio_onset_t) -> smpl_t {
     return (*o).silence;
 }
 /* * set onset detection peak picking threshold
@@ -882,8 +882,8 @@ pub unsafe extern "C" fn aubio_onset_get_silence(mut o: *const aubio_onset_t) ->
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_threshold(
-    mut o: *mut aubio_onset_t,
-    mut threshold: smpl_t,
+    o: *mut aubio_onset_t,
+    threshold: smpl_t,
 ) -> uint_t {
     aubio_peakpicker_set_threshold((*o).pp, threshold);
     return AUBIO_OK as i32 as uint_t;
@@ -895,7 +895,7 @@ pub unsafe extern "C" fn aubio_onset_set_threshold(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_threshold(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_threshold(o: *const aubio_onset_t) -> smpl_t {
     return aubio_peakpicker_get_threshold((*o).pp);
 }
 /* * set minimum inter onset interval in samples
@@ -908,7 +908,7 @@ pub unsafe extern "C" fn aubio_onset_get_threshold(mut o: *const aubio_onset_t) 
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_minioi(
     mut o: *mut aubio_onset_t,
-    mut minioi: uint_t,
+    minioi: uint_t,
 ) -> uint_t {
     (*o).minioi = minioi;
     return AUBIO_OK as i32 as uint_t;
@@ -921,7 +921,7 @@ pub unsafe extern "C" fn aubio_onset_set_minioi(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_minioi(mut o: *const aubio_onset_t) -> uint_t {
+pub unsafe extern "C" fn aubio_onset_get_minioi(o: *const aubio_onset_t) -> uint_t {
     return (*o).minioi;
 }
 /* * set minimum inter onset interval in seconds
@@ -933,8 +933,8 @@ pub unsafe extern "C" fn aubio_onset_get_minioi(mut o: *const aubio_onset_t) -> 
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_minioi_s(
-    mut o: *mut aubio_onset_t,
-    mut minioi: smpl_t,
+    o: *mut aubio_onset_t,
+    minioi: smpl_t,
 ) -> uint_t {
     return aubio_onset_set_minioi(
         o,
@@ -949,7 +949,7 @@ pub unsafe extern "C" fn aubio_onset_set_minioi_s(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_minioi_s(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_minioi_s(o: *const aubio_onset_t) -> smpl_t {
     return aubio_onset_get_minioi(o) as f32 / (*o).samplerate as smpl_t;
 }
 /* * set minimum inter onset interval in milliseconds
@@ -961,8 +961,8 @@ pub unsafe extern "C" fn aubio_onset_get_minioi_s(mut o: *const aubio_onset_t) -
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_minioi_ms(
-    mut o: *mut aubio_onset_t,
-    mut minioi: smpl_t,
+    o: *mut aubio_onset_t,
+    minioi: smpl_t,
 ) -> uint_t {
     return aubio_onset_set_minioi_s(o, (minioi as f64 / 1000.0f64) as smpl_t);
 }
@@ -974,7 +974,7 @@ pub unsafe extern "C" fn aubio_onset_set_minioi_ms(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_minioi_ms(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_minioi_ms(o: *const aubio_onset_t) -> smpl_t {
     return (aubio_onset_get_minioi_s(o) as f64 * 1000.0f64) as smpl_t;
 }
 /* * set delay in samples
@@ -987,7 +987,7 @@ pub unsafe extern "C" fn aubio_onset_get_minioi_ms(mut o: *const aubio_onset_t) 
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_delay(
     mut o: *mut aubio_onset_t,
-    mut delay: uint_t,
+    delay: uint_t,
 ) -> uint_t {
     (*o).delay = delay;
     return AUBIO_OK as i32 as uint_t;
@@ -1000,7 +1000,7 @@ pub unsafe extern "C" fn aubio_onset_set_delay(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_delay(mut o: *const aubio_onset_t) -> uint_t {
+pub unsafe extern "C" fn aubio_onset_get_delay(o: *const aubio_onset_t) -> uint_t {
     return (*o).delay;
 }
 /* * set delay in seconds
@@ -1012,8 +1012,8 @@ pub unsafe extern "C" fn aubio_onset_get_delay(mut o: *const aubio_onset_t) -> u
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_delay_s(
-    mut o: *mut aubio_onset_t,
-    mut delay: smpl_t,
+    o: *mut aubio_onset_t,
+    delay: smpl_t,
 ) -> uint_t {
     return aubio_onset_set_delay(o, (delay * (*o).samplerate as f32) as uint_t);
 }
@@ -1025,7 +1025,7 @@ pub unsafe extern "C" fn aubio_onset_set_delay_s(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_delay_s(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_delay_s(o: *const aubio_onset_t) -> smpl_t {
     return aubio_onset_get_delay(o) as f32 / (*o).samplerate as smpl_t;
 }
 /* * set delay in milliseconds
@@ -1037,8 +1037,8 @@ pub unsafe extern "C" fn aubio_onset_get_delay_s(mut o: *const aubio_onset_t) ->
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_delay_ms(
-    mut o: *mut aubio_onset_t,
-    mut delay: smpl_t,
+    o: *mut aubio_onset_t,
+    delay: smpl_t,
 ) -> uint_t {
     return aubio_onset_set_delay_s(o, (delay as f64 / 1000.0f64) as smpl_t);
 }
@@ -1050,7 +1050,7 @@ pub unsafe extern "C" fn aubio_onset_set_delay_ms(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_delay_ms(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_delay_ms(o: *const aubio_onset_t) -> smpl_t {
     return (aubio_onset_get_delay_s(o) as f64 * 1000.0f64) as smpl_t;
 }
 /* * get onset detection function
@@ -1060,7 +1060,7 @@ pub unsafe extern "C" fn aubio_onset_get_delay_ms(mut o: *const aubio_onset_t) -
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_onset_get_descriptor(mut o: *const aubio_onset_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_onset_get_descriptor(o: *const aubio_onset_t) -> smpl_t {
     return *(*(*o).desc).data.offset(0 as i32 as isize);
 }
 /* * get thresholded onset detection function
@@ -1071,9 +1071,9 @@ pub unsafe extern "C" fn aubio_onset_get_descriptor(mut o: *const aubio_onset_t)
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_get_thresholded_descriptor(
-    mut o: *const aubio_onset_t,
+    o: *const aubio_onset_t,
 ) -> smpl_t {
-    let mut thresholded: *mut fvec_t = aubio_peakpicker_get_thresholded_input((*o).pp);
+    let thresholded: *mut fvec_t = aubio_peakpicker_get_thresholded_input((*o).pp);
     return *(*thresholded).data.offset(0 as i32 as isize);
 }
 /* * create onset detection object
@@ -1089,10 +1089,10 @@ pub unsafe extern "C" fn aubio_onset_get_thresholded_descriptor(
 /* Allocate memory for an onset detection */
 #[no_mangle]
 pub unsafe extern "C" fn new_aubio_onset(
-    mut onset_mode: *const char_t,
-    mut buf_size: uint_t,
-    mut hop_size: uint_t,
-    mut samplerate: uint_t,
+    onset_mode: *const char_t,
+    buf_size: uint_t,
+    hop_size: uint_t,
+    samplerate: uint_t,
 ) -> *mut aubio_onset_t {
     let mut o: *mut aubio_onset_t = calloc(
         ::std::mem::size_of::<aubio_onset_t>() as u64,
@@ -1179,7 +1179,7 @@ pub unsafe extern "C" fn aubio_onset_reset(mut o: *mut aubio_onset_t) {
 #[no_mangle]
 pub unsafe extern "C" fn aubio_onset_set_default_parameters(
     mut o: *mut aubio_onset_t,
-    mut onset_mode: *const char_t,
+    onset_mode: *const char_t,
 ) -> uint_t {
     let mut ret: uint_t = AUBIO_OK as i32 as uint_t;
     /* set some default parameter */
@@ -1250,7 +1250,7 @@ pub unsafe extern "C" fn aubio_onset_set_default_parameters(
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_onset(mut o: *mut aubio_onset_t) {
+pub unsafe extern "C" fn del_aubio_onset(o: *mut aubio_onset_t) {
     if !(*o).spectral_whitening.is_null() {
         del_aubio_spectral_whitening((*o).spectral_whitening);
     }

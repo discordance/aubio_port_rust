@@ -80,7 +80,7 @@ pub const AUBIO_LOG_INF: aubio_log_level = 1;
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_fvec(mut length: uint_t) -> *mut fvec_t {
+pub unsafe extern "C" fn new_fvec(length: uint_t) -> *mut fvec_t {
     let mut s: *mut fvec_t = 0 as *mut fvec_t;
     if length as sint_t <= 0 as i32 { return 0 as *mut fvec_t }
     s =
@@ -95,27 +95,27 @@ pub unsafe extern "C" fn new_fvec(mut length: uint_t) -> *mut fvec_t {
     return s;
 }
 #[no_mangle]
-pub unsafe extern "C" fn del_fvec(mut s: *mut fvec_t) {
+pub unsafe extern "C" fn del_fvec(s: *mut fvec_t) {
     free((*s).data as *mut core::ffi::c_void);
     free(s as *mut core::ffi::c_void);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_set_sample(mut s: *mut fvec_t, mut data: smpl_t,
-                                         mut position: uint_t) {
+pub unsafe extern "C" fn fvec_set_sample(s: *mut fvec_t, data: smpl_t,
+                                         position: uint_t) {
     *(*s).data.offset(position as isize) = data;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_get_sample(mut s: *const fvec_t,
-                                         mut position: uint_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_get_sample(s: *const fvec_t,
+                                         position: uint_t) -> smpl_t {
     return *(*s).data.offset(position as isize);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_get_data(mut s: *const fvec_t) -> *mut smpl_t {
+pub unsafe extern "C" fn fvec_get_data(s: *const fvec_t) -> *mut smpl_t {
     return (*s).data;
 }
 /* helper functions */
 #[no_mangle]
-pub unsafe extern "C" fn fvec_print(mut s: *const fvec_t) {
+pub unsafe extern "C" fn fvec_print(s: *const fvec_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).length {
@@ -128,7 +128,7 @@ pub unsafe extern "C" fn fvec_print(mut s: *const fvec_t) {
               b"\n\x00" as *const u8 as *const i8);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_set_all(mut s: *mut fvec_t, mut val: smpl_t) {
+pub unsafe extern "C" fn fvec_set_all(s: *mut fvec_t, val: smpl_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).length {
@@ -137,21 +137,21 @@ pub unsafe extern "C" fn fvec_set_all(mut s: *mut fvec_t, mut val: smpl_t) {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_zeros(mut s: *mut fvec_t) {
+pub unsafe extern "C" fn fvec_zeros(s: *mut fvec_t) {
     fvec_set_all(s, 0.0f64 as smpl_t);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_ones(mut s: *mut fvec_t) {
+pub unsafe extern "C" fn fvec_ones(s: *mut fvec_t) {
     fvec_set_all(s, 1.0f64 as smpl_t);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_rev(mut s: *mut fvec_t) {
+pub unsafe extern "C" fn fvec_rev(s: *mut fvec_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while (j as f32) <
               floorf((*s).length as smpl_t /
                          2 as i32 as f32) {
-        let mut t: smpl_t = *(*s).data.offset(j as isize);
+        let t: smpl_t = *(*s).data.offset(j as isize);
         *(*s).data.offset(j as isize) =
             *(*s).data.offset((*s).length.wrapping_sub(1 as i32 as
                                                            u32).wrapping_sub(j)
@@ -163,9 +163,9 @@ pub unsafe extern "C" fn fvec_rev(mut s: *mut fvec_t) {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_weight(mut s: *mut fvec_t,
-                                     mut weight: *const fvec_t) {
-    let mut length: uint_t =
+pub unsafe extern "C" fn fvec_weight(s: *mut fvec_t,
+                                     weight: *const fvec_t) {
+    let length: uint_t =
         if (*s).length < (*weight).length {
             (*s).length
         } else { (*weight).length };
@@ -186,10 +186,10 @@ pub unsafe extern "C" fn fvec_weight(mut s: *mut fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn fvec_weighted_copy(mut in_0: *const fvec_t,
-                                            mut weight: *const fvec_t,
-                                            mut out: *mut fvec_t) {
-    let mut length: uint_t =
+pub unsafe extern "C" fn fvec_weighted_copy(in_0: *const fvec_t,
+                                            weight: *const fvec_t,
+                                            out: *mut fvec_t) {
+    let length: uint_t =
         if (*in_0).length <
                (if (*out).length < (*weight).length {
                     (*out).length
@@ -336,7 +336,7 @@ pub unsafe extern "C" fn fvec_weighted_copy(mut in_0: *const fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn fvec_copy(mut s: *const fvec_t, mut t: *mut fvec_t) {
+pub unsafe extern "C" fn fvec_copy(s: *const fvec_t, t: *mut fvec_t) {
     if (*s).length != (*t).length {
         aubio_log(AUBIO_LOG_ERR as i32,
                   b"AUBIO ERROR: trying to copy %d elements to %d elements \n\x00"

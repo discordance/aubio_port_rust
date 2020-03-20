@@ -281,13 +281,13 @@ pub type aubio_hist_t = _aubio_hist_t;
  * Object creation/deletion calls
  */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_hist(mut flow: smpl_t, mut fhig: smpl_t,
-                                        mut nelems: uint_t)
+pub unsafe extern "C" fn new_aubio_hist(flow: smpl_t, fhig: smpl_t,
+                                        nelems: uint_t)
  -> *mut aubio_hist_t {
     let mut s: *mut aubio_hist_t =
         calloc(::std::mem::size_of::<aubio_hist_t>() as u64,
                1 as i32 as u64) as *mut aubio_hist_t;
-    let mut step: smpl_t = (fhig - flow) / nelems as smpl_t;
+    let step: smpl_t = (fhig - flow) / nelems as smpl_t;
     let mut accum: smpl_t = step;
     let mut i: uint_t = 0;
     if nelems as sint_t <= 0 as i32 {
@@ -315,7 +315,7 @@ pub unsafe extern "C" fn new_aubio_hist(mut flow: smpl_t, mut fhig: smpl_t,
 }
 /* * histogram deletion */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_hist(mut s: *mut aubio_hist_t) {
+pub unsafe extern "C" fn del_aubio_hist(s: *mut aubio_hist_t) {
     del_fvec((*s).hist);
     del_fvec((*s).cent);
     del_aubio_scale((*s).scaler);
@@ -326,8 +326,8 @@ pub unsafe extern "C" fn del_aubio_hist(mut s: *mut aubio_hist_t) {
  * do it
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_hist_do(mut s: *mut aubio_hist_t,
-                                       mut input: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_hist_do(s: *mut aubio_hist_t,
+                                       input: *mut fvec_t) {
     let mut j: uint_t = 0;
     let mut tmp: sint_t = 0 as i32;
     aubio_scale_do((*s).scaler, input);
@@ -346,8 +346,8 @@ pub unsafe extern "C" fn aubio_hist_do(mut s: *mut aubio_hist_t,
 }
 /* * compute the histogram ignoring null elements */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_hist_do_notnull(mut s: *mut aubio_hist_t,
-                                               mut input: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_hist_do_notnull(s: *mut aubio_hist_t,
+                                               input: *mut fvec_t) {
     let mut j: uint_t = 0;
     let mut tmp: sint_t = 0 as i32;
     aubio_scale_do((*s).scaler, input);
@@ -369,13 +369,13 @@ pub unsafe extern "C" fn aubio_hist_do_notnull(mut s: *mut aubio_hist_t,
 }
 /* * compute dynamic histogram for non-null elements */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_hist_dyn_notnull(mut s: *mut aubio_hist_t,
-                                                mut input: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_hist_dyn_notnull(s: *mut aubio_hist_t,
+                                                input: *mut fvec_t) {
     let mut i: uint_t = 0;
     let mut tmp: sint_t = 0 as i32;
-    let mut ilow: smpl_t = fvec_min(input);
-    let mut ihig: smpl_t = fvec_max(input);
-    let mut step: smpl_t = (ihig - ilow) / (*s).nelems as smpl_t;
+    let ilow: smpl_t = fvec_min(input);
+    let ihig: smpl_t = fvec_max(input);
+    let step: smpl_t = (ihig - ilow) / (*s).nelems as smpl_t;
     /* readapt */
     aubio_scale_set_limits((*s).scaler, ilow, ihig,
                            0 as i32 as smpl_t, (*s).nelems as smpl_t);
@@ -409,7 +409,7 @@ pub unsafe extern "C" fn aubio_hist_dyn_notnull(mut s: *mut aubio_hist_t,
 }
 /* * weight the histogram */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_hist_weight(mut s: *mut aubio_hist_t) {
+pub unsafe extern "C" fn aubio_hist_weight(s: *mut aubio_hist_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).nelems {
@@ -420,7 +420,7 @@ pub unsafe extern "C" fn aubio_hist_weight(mut s: *mut aubio_hist_t) {
 }
 /* * compute the mean of the histogram */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_hist_mean(mut s: *const aubio_hist_t)
+pub unsafe extern "C" fn aubio_hist_mean(s: *const aubio_hist_t)
  -> smpl_t {
     let mut j: uint_t = 0;
     let mut tmp: smpl_t = 0.0f64 as smpl_t;

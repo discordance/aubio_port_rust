@@ -89,9 +89,9 @@ pub const AUBIO_LOG_DBG: aubio_log_level = 3;
 pub const AUBIO_LOG_MSG: aubio_log_level = 2;
 pub const AUBIO_LOG_INF: aubio_log_level = 1;
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_window(mut window_type: *mut char_t,
-                                          mut length: uint_t) -> *mut fvec_t {
-    let mut win: *mut fvec_t = new_fvec(length);
+pub unsafe extern "C" fn new_aubio_window(window_type: *mut char_t,
+                                          length: uint_t) -> *mut fvec_t {
+    let win: *mut fvec_t = new_fvec(length);
     let mut err: uint_t = 0;
     if win.is_null() { return 0 as *mut fvec_t }
     err = fvec_set_window(win, window_type);
@@ -102,12 +102,12 @@ pub unsafe extern "C" fn new_aubio_window(mut window_type: *mut char_t,
     return win;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_set_window(mut win: *mut fvec_t,
-                                         mut window_type: *mut char_t)
+pub unsafe extern "C" fn fvec_set_window(win: *mut fvec_t,
+                                         window_type: *mut char_t)
  -> uint_t {
-    let mut w: *mut smpl_t = (*win).data;
+    let w: *mut smpl_t = (*win).data;
     let mut i: uint_t = 0;
-    let mut size: uint_t = (*win).length;
+    let size: uint_t = (*win).length;
     let mut wintype: aubio_window_type = aubio_win_ones;
     if window_type.is_null() {
         aubio_log(AUBIO_LOG_ERR as i32,
@@ -260,7 +260,7 @@ pub unsafe extern "C" fn fvec_set_window(mut win: *mut fvec_t,
         7 => {
             let mut a: lsmp_t = 0.;
             let mut b: lsmp_t = 0.;
-            let mut c: lsmp_t = 0.5f64;
+            let c: lsmp_t = 0.5f64;
             let mut n: uint_t = 0;
             n = 0 as i32 as uint_t;
             while n < size {
@@ -311,7 +311,7 @@ pub unsafe extern "C" fn fvec_set_window(mut win: *mut fvec_t,
     return 0 as i32 as uint_t;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_unwrap2pi(mut phase: smpl_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_unwrap2pi(phase: smpl_t) -> smpl_t {
     /* mod(phase+pi,-2pi)+pi */
     return (phase as f64 +
                 3.14159265358979323846264338327950288f64 * 2.0f64 *
@@ -324,7 +324,7 @@ pub unsafe extern "C" fn aubio_unwrap2pi(mut phase: smpl_t) -> smpl_t {
                              f64)) as smpl_t;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_mean(mut s: *mut fvec_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_mean(s: *mut fvec_t) -> smpl_t {
     let mut tmp: smpl_t = 0.0f64 as smpl_t;
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
@@ -335,7 +335,7 @@ pub unsafe extern "C" fn fvec_mean(mut s: *mut fvec_t) -> smpl_t {
     return tmp / (*s).length as smpl_t;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_sum(mut s: *mut fvec_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_sum(s: *mut fvec_t) -> smpl_t {
     let mut tmp: smpl_t = 0.0f64 as smpl_t;
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
@@ -346,7 +346,7 @@ pub unsafe extern "C" fn fvec_sum(mut s: *mut fvec_t) -> smpl_t {
     return tmp;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_max(mut s: *mut fvec_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_max(s: *mut fvec_t) -> smpl_t {
     let mut j: uint_t = 0;
     let mut tmp: smpl_t = *(*s).data.offset(0 as i32 as isize);
     j = 1 as i32 as uint_t;
@@ -360,7 +360,7 @@ pub unsafe extern "C" fn fvec_max(mut s: *mut fvec_t) -> smpl_t {
     return tmp;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_min(mut s: *mut fvec_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_min(s: *mut fvec_t) -> smpl_t {
     let mut j: uint_t = 0;
     let mut tmp: smpl_t = *(*s).data.offset(0 as i32 as isize);
     j = 1 as i32 as uint_t;
@@ -374,7 +374,7 @@ pub unsafe extern "C" fn fvec_min(mut s: *mut fvec_t) -> smpl_t {
     return tmp;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_min_elem(mut s: *mut fvec_t) -> uint_t {
+pub unsafe extern "C" fn fvec_min_elem(s: *mut fvec_t) -> uint_t {
     let mut j: uint_t = 0;
     let mut pos: uint_t = 0.0f64 as uint_t;
     let mut tmp: smpl_t = *(*s).data.offset(0 as i32 as isize);
@@ -390,7 +390,7 @@ pub unsafe extern "C" fn fvec_min_elem(mut s: *mut fvec_t) -> uint_t {
     return pos;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_max_elem(mut s: *mut fvec_t) -> uint_t {
+pub unsafe extern "C" fn fvec_max_elem(s: *mut fvec_t) -> uint_t {
     let mut j: uint_t = 0;
     let mut pos: uint_t = 0 as i32 as uint_t;
     let mut tmp: smpl_t = 0.0f64 as smpl_t;
@@ -406,8 +406,8 @@ pub unsafe extern "C" fn fvec_max_elem(mut s: *mut fvec_t) -> uint_t {
     return pos;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_shift(mut s: *mut fvec_t) {
-    let mut half: uint_t =
+pub unsafe extern "C" fn fvec_shift(s: *mut fvec_t) {
+    let half: uint_t =
         (*s).length.wrapping_div(2 as i32 as u32);
     let mut start: uint_t = half;
     let mut j: uint_t = 0;
@@ -417,7 +417,7 @@ pub unsafe extern "C" fn fvec_shift(mut s: *mut fvec_t) {
     }
     j = 0 as i32 as uint_t;
     while j < half {
-        let mut t: smpl_t = *(*s).data.offset(j as isize);
+        let t: smpl_t = *(*s).data.offset(j as isize);
         *(*s).data.offset(j as isize) =
             *(*s).data.offset(j.wrapping_add(start) as isize);
         *(*s).data.offset(j.wrapping_add(start) as isize) = t;
@@ -426,7 +426,7 @@ pub unsafe extern "C" fn fvec_shift(mut s: *mut fvec_t) {
     if start != half {
         j = 0 as i32 as uint_t;
         while j < half {
-            let mut t_0: smpl_t =
+            let t_0: smpl_t =
                 *(*s).data.offset(j.wrapping_add(start).wrapping_sub(1 as
                                                                          i32
                                                                          as
@@ -444,8 +444,8 @@ pub unsafe extern "C" fn fvec_shift(mut s: *mut fvec_t) {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_ishift(mut s: *mut fvec_t) {
-    let mut half: uint_t =
+pub unsafe extern "C" fn fvec_ishift(s: *mut fvec_t) {
+    let half: uint_t =
         (*s).length.wrapping_div(2 as i32 as u32);
     let mut start: uint_t = half;
     let mut j: uint_t = 0;
@@ -455,7 +455,7 @@ pub unsafe extern "C" fn fvec_ishift(mut s: *mut fvec_t) {
     }
     j = 0 as i32 as uint_t;
     while j < half {
-        let mut t: smpl_t = *(*s).data.offset(j as isize);
+        let t: smpl_t = *(*s).data.offset(j as isize);
         *(*s).data.offset(j as isize) =
             *(*s).data.offset(j.wrapping_add(start) as isize);
         *(*s).data.offset(j.wrapping_add(start) as isize) = t;
@@ -464,7 +464,7 @@ pub unsafe extern "C" fn fvec_ishift(mut s: *mut fvec_t) {
     if start != half {
         j = 0 as i32 as uint_t;
         while j < half {
-            let mut t_0: smpl_t = *(*s).data.offset(half as isize);
+            let t_0: smpl_t = *(*s).data.offset(half as isize);
             *(*s).data.offset(half as isize) = *(*s).data.offset(j as isize);
             *(*s).data.offset(j as isize) = t_0;
             j = j.wrapping_add(1)
@@ -472,8 +472,8 @@ pub unsafe extern "C" fn fvec_ishift(mut s: *mut fvec_t) {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_push(mut in_0: *mut fvec_t,
-                                   mut new_elem: smpl_t) {
+pub unsafe extern "C" fn fvec_push(in_0: *mut fvec_t,
+                                   new_elem: smpl_t) {
     let mut i: uint_t = 0;
     i = 0 as i32 as uint_t;
     while i < (*in_0).length.wrapping_sub(1 as i32 as u32) {
@@ -493,8 +493,8 @@ pub unsafe extern "C" fn fvec_push(mut in_0: *mut fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn fvec_clamp(mut in_0: *mut fvec_t,
-                                    mut absmax: smpl_t) {
+pub unsafe extern "C" fn fvec_clamp(in_0: *mut fvec_t,
+                                    absmax: smpl_t) {
     let mut i: uint_t = 0;
     i = 0 as i32 as uint_t;
     while i < (*in_0).length {
@@ -511,7 +511,7 @@ pub unsafe extern "C" fn fvec_clamp(mut in_0: *mut fvec_t,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_level_lin(mut f: *const fvec_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_level_lin(f: *const fvec_t) -> smpl_t {
     let mut energy: smpl_t = 0.0f64 as smpl_t;
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
@@ -523,7 +523,7 @@ pub unsafe extern "C" fn aubio_level_lin(mut f: *const fvec_t) -> smpl_t {
     return energy / (*f).length as f32;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_local_hfc(mut v: *mut fvec_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_local_hfc(v: *mut fvec_t) -> smpl_t {
     let mut hfc: smpl_t = 0.0f64 as smpl_t;
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
@@ -536,13 +536,13 @@ pub unsafe extern "C" fn fvec_local_hfc(mut v: *mut fvec_t) -> smpl_t {
     return hfc;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_min_removal(mut v: *mut fvec_t) {
-    let mut v_min: smpl_t = fvec_min(v);
+pub unsafe extern "C" fn fvec_min_removal(v: *mut fvec_t) {
+    let v_min: smpl_t = fvec_min(v);
     fvec_add(v, -v_min);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_alpha_norm(mut o: *mut fvec_t,
-                                         mut alpha: smpl_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_alpha_norm(o: *mut fvec_t,
+                                         alpha: smpl_t) -> smpl_t {
     let mut j: uint_t = 0;
     let mut tmp: smpl_t = 0.0f64 as smpl_t;
     j = 0 as i32 as uint_t;
@@ -554,10 +554,10 @@ pub unsafe extern "C" fn fvec_alpha_norm(mut o: *mut fvec_t,
                 (1.0f64 / alpha as f64) as f32);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_alpha_normalise(mut o: *mut fvec_t,
-                                              mut alpha: smpl_t) {
+pub unsafe extern "C" fn fvec_alpha_normalise(o: *mut fvec_t,
+                                              alpha: smpl_t) {
     let mut j: uint_t = 0;
-    let mut norm: smpl_t = fvec_alpha_norm(o, alpha);
+    let norm: smpl_t = fvec_alpha_norm(o, alpha);
     j = 0 as i32 as uint_t;
     while j < (*o).length {
         let ref mut fresh0 = *(*o).data.offset(j as isize);
@@ -566,7 +566,7 @@ pub unsafe extern "C" fn fvec_alpha_normalise(mut o: *mut fvec_t,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_add(mut o: *mut fvec_t, mut val: smpl_t) {
+pub unsafe extern "C" fn fvec_add(o: *mut fvec_t, val: smpl_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*o).length {
@@ -576,7 +576,7 @@ pub unsafe extern "C" fn fvec_add(mut o: *mut fvec_t, mut val: smpl_t) {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_mul(mut o: *mut fvec_t, mut val: smpl_t) {
+pub unsafe extern "C" fn fvec_mul(o: *mut fvec_t, val: smpl_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*o).length {
@@ -586,10 +586,10 @@ pub unsafe extern "C" fn fvec_mul(mut o: *mut fvec_t, mut val: smpl_t) {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_adapt_thres(mut vec: *mut fvec_t,
-                                          mut tmp: *mut fvec_t,
-                                          mut post: uint_t, mut pre: uint_t) {
-    let mut length: uint_t = (*vec).length;
+pub unsafe extern "C" fn fvec_adapt_thres(vec: *mut fvec_t,
+                                          tmp: *mut fvec_t,
+                                          post: uint_t, pre: uint_t) {
+    let length: uint_t = (*vec).length;
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < length {
@@ -599,15 +599,15 @@ pub unsafe extern "C" fn fvec_adapt_thres(mut vec: *mut fvec_t,
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_moving_thres(mut vec: *mut fvec_t,
-                                           mut tmpvec: *mut fvec_t,
-                                           mut post: uint_t, mut pre: uint_t,
-                                           mut pos: uint_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_moving_thres(vec: *mut fvec_t,
+                                           tmpvec: *mut fvec_t,
+                                           post: uint_t, pre: uint_t,
+                                           pos: uint_t) -> smpl_t {
     let mut k: uint_t = 0;
-    let mut medar: *mut smpl_t = (*tmpvec).data;
-    let mut win_length: uint_t =
+    let medar: *mut smpl_t = (*tmpvec).data;
+    let win_length: uint_t =
         post.wrapping_add(pre).wrapping_add(1 as i32 as u32);
-    let mut length: uint_t = (*vec).length;
+    let length: uint_t = (*vec).length;
     /* post part of the buffer does not exist */
     if pos < post.wrapping_add(1 as i32 as u32) {
         k = 0 as i32 as uint_t; /* 0-padding at the beginning */
@@ -654,9 +654,9 @@ pub unsafe extern "C" fn fvec_moving_thres(mut vec: *mut fvec_t,
     return fvec_median(tmpvec);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_median(mut input: *mut fvec_t) -> smpl_t {
-    let mut n: uint_t = (*input).length;
-    let mut arr: *mut smpl_t = (*input).data;
+pub unsafe extern "C" fn fvec_median(input: *mut fvec_t) -> smpl_t {
+    let n: uint_t = (*input).length;
+    let arr: *mut smpl_t = (*input).data;
     let mut low: uint_t = 0;
     let mut high: uint_t = 0;
     let mut median: uint_t = 0;
@@ -675,7 +675,7 @@ pub unsafe extern "C" fn fvec_median(mut input: *mut fvec_t) -> smpl_t {
         if high == low.wrapping_add(1 as i32 as u32) {
             /* Two elements only */
             if *arr.offset(low as isize) > *arr.offset(high as isize) {
-                let mut t: smpl_t = *arr.offset(low as isize);
+                let t: smpl_t = *arr.offset(low as isize);
                 *arr.offset(low as isize) = *arr.offset(high as isize);
                 *arr.offset(high as isize) = t
             }
@@ -686,22 +686,22 @@ pub unsafe extern "C" fn fvec_median(mut input: *mut fvec_t) -> smpl_t {
             low.wrapping_add(high).wrapping_div(2 as i32 as
                                                     u32);
         if *arr.offset(middle as isize) > *arr.offset(high as isize) {
-            let mut t_0: smpl_t = *arr.offset(middle as isize);
+            let t_0: smpl_t = *arr.offset(middle as isize);
             *arr.offset(middle as isize) = *arr.offset(high as isize);
             *arr.offset(high as isize) = t_0
         }
         if *arr.offset(low as isize) > *arr.offset(high as isize) {
-            let mut t_1: smpl_t = *arr.offset(low as isize);
+            let t_1: smpl_t = *arr.offset(low as isize);
             *arr.offset(low as isize) = *arr.offset(high as isize);
             *arr.offset(high as isize) = t_1
         }
         if *arr.offset(middle as isize) > *arr.offset(low as isize) {
-            let mut t_2: smpl_t = *arr.offset(middle as isize);
+            let t_2: smpl_t = *arr.offset(middle as isize);
             *arr.offset(middle as isize) = *arr.offset(low as isize);
             *arr.offset(low as isize) = t_2
         }
         /* Swap low item (now in position middle) into position (low+1) */
-        let mut t_3: smpl_t = *arr.offset(middle as isize);
+        let t_3: smpl_t = *arr.offset(middle as isize);
         *arr.offset(middle as isize) =
             *arr.offset(low.wrapping_add(1 as i32 as u32) as
                             isize);
@@ -724,12 +724,12 @@ pub unsafe extern "C" fn fvec_median(mut input: *mut fvec_t) -> smpl_t {
                 }
             }
             if hh < ll { break ; }
-            let mut t_4: smpl_t = *arr.offset(ll as isize);
+            let t_4: smpl_t = *arr.offset(ll as isize);
             *arr.offset(ll as isize) = *arr.offset(hh as isize);
             *arr.offset(hh as isize) = t_4
         }
         /* Swap middle item (in position low) back into correct position */
-        let mut t_5: smpl_t = *arr.offset(low as isize);
+        let t_5: smpl_t = *arr.offset(low as isize);
         *arr.offset(low as isize) = *arr.offset(hh as isize);
         *arr.offset(hh as isize) = t_5;
         /* Re-set active partition */
@@ -740,15 +740,15 @@ pub unsafe extern "C" fn fvec_median(mut input: *mut fvec_t) -> smpl_t {
     };
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_quadratic_peak_pos(mut x: *const fvec_t,
-                                                 mut pos: uint_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_quadratic_peak_pos(x: *const fvec_t,
+                                                 pos: uint_t) -> smpl_t {
     let mut s0: smpl_t = 0.;
     let mut s1: smpl_t = 0.;
     let mut s2: smpl_t = 0.;
     let mut x0: uint_t = 0;
     let mut x2: uint_t = 0;
-    let mut half: smpl_t = 0.5f64 as smpl_t;
-    let mut two: smpl_t = 2.0f64 as smpl_t;
+    let half: smpl_t = 0.5f64 as smpl_t;
+    let two: smpl_t = 2.0f64 as smpl_t;
     if pos == 0 as i32 as u32 ||
            pos == (*x).length.wrapping_sub(1 as i32 as u32) {
         return pos as smpl_t
@@ -779,12 +779,12 @@ pub unsafe extern "C" fn fvec_quadratic_peak_pos(mut x: *const fvec_t,
     return pos as f32 + half * (s0 - s2) / (s0 - two * s1 + s2);
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_quadratic_peak_mag(mut x: *mut fvec_t,
-                                                 mut pos: smpl_t) -> smpl_t {
+pub unsafe extern "C" fn fvec_quadratic_peak_mag(x: *mut fvec_t,
+                                                 pos: smpl_t) -> smpl_t {
     let mut x0: smpl_t = 0.;
     let mut x1: smpl_t = 0.;
     let mut x2: smpl_t = 0.;
-    let mut index: uint_t =
+    let index: uint_t =
         ((pos as f64 - 0.5f64) as
              uint_t).wrapping_add(1 as i32 as u32);
     if pos >= (*x).length as f32 || (pos as f64) < 0.0f64
@@ -805,8 +805,8 @@ pub unsafe extern "C" fn fvec_quadratic_peak_mag(mut x: *mut fvec_t,
                smpl_t;
 }
 #[no_mangle]
-pub unsafe extern "C" fn fvec_peakpick(mut onset: *const fvec_t,
-                                       mut pos: uint_t) -> uint_t {
+pub unsafe extern "C" fn fvec_peakpick(onset: *const fvec_t,
+                                       pos: uint_t) -> uint_t {
     let mut tmp: uint_t = 0 as i32 as uint_t;
     tmp =
         (*(*onset).data.offset(pos as isize) >
@@ -822,10 +822,10 @@ pub unsafe extern "C" fn fvec_peakpick(mut onset: *const fvec_t,
     return tmp;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_quadfrac(mut s0: smpl_t, mut s1: smpl_t,
-                                        mut s2: smpl_t, mut pf: smpl_t)
+pub unsafe extern "C" fn aubio_quadfrac(s0: smpl_t, s1: smpl_t,
+                                        s2: smpl_t, pf: smpl_t)
  -> smpl_t {
-    let mut tmp: smpl_t =
+    let tmp: smpl_t =
         (s0 as f64 +
              pf as f64 / 2.0f64 *
                  (pf as f64 *
@@ -837,7 +837,7 @@ pub unsafe extern "C" fn aubio_quadfrac(mut s0: smpl_t, mut s1: smpl_t,
     return tmp;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_freqtomidi(mut freq: smpl_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_freqtomidi(freq: smpl_t) -> smpl_t {
     let mut midi: smpl_t = 0.;
     if (freq as f64) < 2.0f64 ||
            freq as f64 > 100000.0f64 {
@@ -851,7 +851,7 @@ pub unsafe extern "C" fn aubio_freqtomidi(mut freq: smpl_t) -> smpl_t {
     return midi;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_miditofreq(mut midi: smpl_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_miditofreq(midi: smpl_t) -> smpl_t {
     let mut freq: smpl_t = 0.;
     if midi as f64 > 140.0f64 { return 0.0f64 as smpl_t }
     freq = ((midi as f64 + 3.0f64) / 12.0f64) as smpl_t;
@@ -862,53 +862,53 @@ pub unsafe extern "C" fn aubio_miditofreq(mut midi: smpl_t) -> smpl_t {
     return freq;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_bintofreq(mut bin: smpl_t,
-                                         mut samplerate: smpl_t,
-                                         mut fftsize: smpl_t) -> smpl_t {
-    let mut freq: smpl_t = samplerate / fftsize;
+pub unsafe extern "C" fn aubio_bintofreq(bin: smpl_t,
+                                         samplerate: smpl_t,
+                                         fftsize: smpl_t) -> smpl_t {
+    let freq: smpl_t = samplerate / fftsize;
     return freq *
                (if bin > 0 as i32 as f32 {
                     bin
                 } else { 0 as i32 as f32 });
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_bintomidi(mut bin: smpl_t,
-                                         mut samplerate: smpl_t,
-                                         mut fftsize: smpl_t) -> smpl_t {
-    let mut midi: smpl_t = aubio_bintofreq(bin, samplerate, fftsize);
+pub unsafe extern "C" fn aubio_bintomidi(bin: smpl_t,
+                                         samplerate: smpl_t,
+                                         fftsize: smpl_t) -> smpl_t {
+    let midi: smpl_t = aubio_bintofreq(bin, samplerate, fftsize);
     return aubio_freqtomidi(midi);
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_freqtobin(mut freq: smpl_t,
-                                         mut samplerate: smpl_t,
-                                         mut fftsize: smpl_t) -> smpl_t {
-    let mut bin: smpl_t = fftsize / samplerate;
+pub unsafe extern "C" fn aubio_freqtobin(freq: smpl_t,
+                                         samplerate: smpl_t,
+                                         fftsize: smpl_t) -> smpl_t {
+    let bin: smpl_t = fftsize / samplerate;
     return (if freq > 0 as i32 as f32 {
                 freq
             } else { 0 as i32 as f32 }) * bin;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_miditobin(mut midi: smpl_t,
-                                         mut samplerate: smpl_t,
-                                         mut fftsize: smpl_t) -> smpl_t {
-    let mut freq: smpl_t = aubio_miditofreq(midi);
+pub unsafe extern "C" fn aubio_miditobin(midi: smpl_t,
+                                         samplerate: smpl_t,
+                                         fftsize: smpl_t) -> smpl_t {
+    let freq: smpl_t = aubio_miditofreq(midi);
     return aubio_freqtobin(freq, samplerate, fftsize);
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_is_power_of_two(mut a: uint_t) -> uint_t {
+pub unsafe extern "C" fn aubio_is_power_of_two(a: uint_t) -> uint_t {
     if a & a.wrapping_sub(1 as i32 as u32) ==
            0 as i32 as u32 {
         return 1 as i32 as uint_t
     } else { return 0 as i32 as uint_t };
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_next_power_of_two(mut a: uint_t) -> uint_t {
+pub unsafe extern "C" fn aubio_next_power_of_two(a: uint_t) -> uint_t {
     let mut i: uint_t = 1 as i32 as uint_t;
     while i < a { i <<= 1 as i32 }
     return i;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_power_of_two_order(mut a: uint_t) -> uint_t {
+pub unsafe extern "C" fn aubio_power_of_two_order(a: uint_t) -> uint_t {
     let mut order: i32 = 0 as i32;
     let mut temp: i32 = aubio_next_power_of_two(a) as i32;
     loop  {
@@ -919,12 +919,12 @@ pub unsafe extern "C" fn aubio_power_of_two_order(mut a: uint_t) -> uint_t {
     return order as uint_t;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_db_spl(mut o: *const fvec_t) -> smpl_t {
+pub unsafe extern "C" fn aubio_db_spl(o: *const fvec_t) -> smpl_t {
     return (10.0f64 * log10f(aubio_level_lin(o)) as f64) as smpl_t;
 }
 #[no_mangle]
-pub unsafe extern "C" fn aubio_silence_detection(mut o: *const fvec_t,
-                                                 mut threshold: smpl_t)
+pub unsafe extern "C" fn aubio_silence_detection(o: *const fvec_t,
+                                                 threshold: smpl_t)
  -> uint_t {
     return (aubio_db_spl(o) < threshold) as i32 as uint_t;
 }
@@ -965,10 +965,10 @@ pub unsafe extern "C" fn aubio_silence_detection(mut o: *const fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_level_detection(mut o: *const fvec_t,
-                                               mut threshold: smpl_t)
+pub unsafe extern "C" fn aubio_level_detection(o: *const fvec_t,
+                                               threshold: smpl_t)
  -> smpl_t {
-    let mut db_spl: smpl_t = aubio_db_spl(o);
+    let db_spl: smpl_t = aubio_db_spl(o);
     if db_spl < threshold { return 1.0f64 as smpl_t } else { return db_spl };
 }
 /* * zero-crossing rate (ZCR)
@@ -982,7 +982,7 @@ pub unsafe extern "C" fn aubio_level_detection(mut o: *const fvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_zero_crossing_rate(mut input: *mut fvec_t)
+pub unsafe extern "C" fn aubio_zero_crossing_rate(input: *mut fvec_t)
  -> smpl_t {
     let mut j: uint_t = 0;
     let mut zcr: uint_t = 0 as i32 as uint_t;
@@ -1283,11 +1283,11 @@ peak is defined as follows:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_autocorr(mut input: *const fvec_t,
-                                        mut output: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_autocorr(input: *const fvec_t,
+                                        output: *mut fvec_t) {
     let mut i: uint_t = 0;
     let mut j: uint_t = 0;
-    let mut length: uint_t = (*input).length;
+    let length: uint_t = (*input).length;
     let mut data: *mut smpl_t = 0 as *mut smpl_t;
     let mut acf: *mut smpl_t = 0 as *mut smpl_t;
     let mut tmp: smpl_t = 0 as i32 as smpl_t;

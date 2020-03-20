@@ -247,18 +247,18 @@ pub type aubio_spectral_whitening_t = _aubio_spectral_whitening_t;
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_spectral_whitening_do(mut o:
+pub unsafe extern "C" fn aubio_spectral_whitening_do(o:
                                                          *mut aubio_spectral_whitening_t,
-                                                     mut fftgrain:
+                                                     fftgrain:
                                                          *mut cvec_t) {
     let mut i: uint_t = 0 as i32 as uint_t;
-    let mut length: uint_t =
+    let length: uint_t =
         if (*fftgrain).length < (*(*o).peak_values).length {
             (*fftgrain).length
         } else { (*(*o).peak_values).length };
     i = 0 as i32 as uint_t;
     while i < length {
-        let mut tmp: smpl_t =
+        let tmp: smpl_t =
             if (*o).r_decay * *(*(*o).peak_values).data.offset(i as isize) >
                    (*o).floor {
                 ((*o).r_decay) * *(*(*o).peak_values).data.offset(i as isize)
@@ -280,9 +280,9 @@ pub unsafe extern "C" fn aubio_spectral_whitening_do(mut o:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_spectral_whitening(mut buf_size: uint_t,
-                                                      mut hop_size: uint_t,
-                                                      mut samplerate: uint_t)
+pub unsafe extern "C" fn new_aubio_spectral_whitening(buf_size: uint_t,
+                                                      hop_size: uint_t,
+                                                      samplerate: uint_t)
  -> *mut aubio_spectral_whitening_t {
     let mut o: *mut aubio_spectral_whitening_t =
         calloc(::std::mem::size_of::<aubio_spectral_whitening_t>() as
@@ -328,7 +328,7 @@ pub unsafe extern "C" fn new_aubio_spectral_whitening(mut buf_size: uint_t,
 #[no_mangle]
 pub unsafe extern "C" fn aubio_spectral_whitening_set_relax_time(mut o:
                                                                      *mut aubio_spectral_whitening_t,
-                                                                 mut relax_time:
+                                                                 relax_time:
                                                                      smpl_t)
  -> uint_t {
     (*o).relax_time = relax_time;
@@ -345,7 +345,7 @@ pub unsafe extern "C" fn aubio_spectral_whitening_set_relax_time(mut o:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_spectral_whitening_get_relax_time(mut o:
+pub unsafe extern "C" fn aubio_spectral_whitening_get_relax_time(o:
                                                                      *mut aubio_spectral_whitening_t)
  -> smpl_t {
     return (*o).relax_time;
@@ -359,7 +359,7 @@ pub unsafe extern "C" fn aubio_spectral_whitening_get_relax_time(mut o:
 #[no_mangle]
 pub unsafe extern "C" fn aubio_spectral_whitening_set_floor(mut o:
                                                                 *mut aubio_spectral_whitening_t,
-                                                            mut floor: smpl_t)
+                                                            floor: smpl_t)
  -> uint_t {
     (*o).floor = floor;
     return AUBIO_OK as i32 as uint_t;
@@ -371,7 +371,7 @@ pub unsafe extern "C" fn aubio_spectral_whitening_set_floor(mut o:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_spectral_whitening_get_floor(mut o:
+pub unsafe extern "C" fn aubio_spectral_whitening_get_floor(o:
                                                                 *mut aubio_spectral_whitening_t)
  -> smpl_t {
     return (*o).floor;
@@ -382,7 +382,7 @@ pub unsafe extern "C" fn aubio_spectral_whitening_get_floor(mut o:
 
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_spectral_whitening_reset(mut o:
+pub unsafe extern "C" fn aubio_spectral_whitening_reset(o:
                                                             *mut aubio_spectral_whitening_t) {
     /* cover the case n == 0. */
     fvec_set_all((*o).peak_values, (*o).floor);
@@ -393,7 +393,7 @@ pub unsafe extern "C" fn aubio_spectral_whitening_reset(mut o:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_spectral_whitening(mut o:
+pub unsafe extern "C" fn del_aubio_spectral_whitening(o:
                                                           *mut aubio_spectral_whitening_t) {
     del_fvec((*o).peak_values);
     free(o as *mut core::ffi::c_void);

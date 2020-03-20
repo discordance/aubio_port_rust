@@ -87,7 +87,7 @@ pub struct cvec_t {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_cvec(mut length: uint_t) -> *mut cvec_t {
+pub unsafe extern "C" fn new_cvec(length: uint_t) -> *mut cvec_t {
     let mut s: *mut cvec_t = 0 as *mut cvec_t;
     if length as sint_t <= 0 as i32 { return 0 as *mut cvec_t }
     s =
@@ -115,7 +115,7 @@ pub unsafe extern "C" fn new_cvec(mut length: uint_t) -> *mut cvec_t {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_cvec(mut s: *mut cvec_t) {
+pub unsafe extern "C" fn del_cvec(s: *mut cvec_t) {
     free((*s).norm as *mut core::ffi::c_void);
     free((*s).phas as *mut core::ffi::c_void);
     free(s as *mut core::ffi::c_void);
@@ -133,9 +133,9 @@ pub unsafe extern "C" fn del_cvec(mut s: *mut cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_norm_set_sample(mut s: *mut cvec_t,
-                                              mut data: smpl_t,
-                                              mut position: uint_t) {
+pub unsafe extern "C" fn cvec_norm_set_sample(s: *mut cvec_t,
+                                              data: smpl_t,
+                                              position: uint_t) {
     *(*s).norm.offset(position as isize) = data;
 }
 /* * write phase value in a complex buffer
@@ -151,9 +151,9 @@ pub unsafe extern "C" fn cvec_norm_set_sample(mut s: *mut cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_phas_set_sample(mut s: *mut cvec_t,
-                                              mut data: smpl_t,
-                                              mut position: uint_t) {
+pub unsafe extern "C" fn cvec_phas_set_sample(s: *mut cvec_t,
+                                              data: smpl_t,
+                                              position: uint_t) {
     *(*s).phas.offset(position as isize) = data;
 }
 /* * read norm value from a complex buffer
@@ -168,8 +168,8 @@ pub unsafe extern "C" fn cvec_phas_set_sample(mut s: *mut cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_norm_get_sample(mut s: *mut cvec_t,
-                                              mut position: uint_t)
+pub unsafe extern "C" fn cvec_norm_get_sample(s: *mut cvec_t,
+                                              position: uint_t)
  -> smpl_t {
     return *(*s).norm.offset(position as isize);
 }
@@ -186,8 +186,8 @@ pub unsafe extern "C" fn cvec_norm_get_sample(mut s: *mut cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_phas_get_sample(mut s: *mut cvec_t,
-                                              mut position: uint_t)
+pub unsafe extern "C" fn cvec_phas_get_sample(s: *mut cvec_t,
+                                              position: uint_t)
  -> smpl_t {
     return *(*s).phas.offset(position as isize);
 }
@@ -201,7 +201,7 @@ pub unsafe extern "C" fn cvec_phas_get_sample(mut s: *mut cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_norm_get_data(mut s: *const cvec_t)
+pub unsafe extern "C" fn cvec_norm_get_data(s: *const cvec_t)
  -> *mut smpl_t {
     return (*s).norm;
 }
@@ -216,7 +216,7 @@ pub unsafe extern "C" fn cvec_norm_get_data(mut s: *const cvec_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_phas_get_data(mut s: *const cvec_t)
+pub unsafe extern "C" fn cvec_phas_get_data(s: *const cvec_t)
  -> *mut smpl_t {
     return (*s).phas;
 }
@@ -227,7 +227,7 @@ pub unsafe extern "C" fn cvec_phas_get_data(mut s: *const cvec_t)
 */
 /* helper functions */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_print(mut s: *const cvec_t) {
+pub unsafe extern "C" fn cvec_print(s: *const cvec_t) {
     let mut j: uint_t = 0;
     aubio_log(AUBIO_LOG_MSG as i32,
               b"norm: \x00" as *const u8 as *const i8);
@@ -259,7 +259,7 @@ pub unsafe extern "C" fn cvec_print(mut s: *const cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_copy(mut s: *const cvec_t, mut t: *mut cvec_t) {
+pub unsafe extern "C" fn cvec_copy(s: *const cvec_t, t: *mut cvec_t) {
     if (*s).length != (*t).length {
         aubio_log(AUBIO_LOG_ERR as i32,
                   b"AUBIO ERROR: trying to copy %d elements to %d elements \n\x00"
@@ -282,8 +282,8 @@ pub unsafe extern "C" fn cvec_copy(mut s: *const cvec_t, mut t: *mut cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_norm_set_all(mut s: *mut cvec_t,
-                                           mut val: smpl_t) {
+pub unsafe extern "C" fn cvec_norm_set_all(s: *mut cvec_t,
+                                           val: smpl_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).length {
@@ -297,7 +297,7 @@ pub unsafe extern "C" fn cvec_norm_set_all(mut s: *mut cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_norm_zeros(mut s: *mut cvec_t) {
+pub unsafe extern "C" fn cvec_norm_zeros(s: *mut cvec_t) {
     cvec_norm_set_all(s, 0.0f64 as smpl_t);
 }
 /* * set all norm elements to one
@@ -306,7 +306,7 @@ pub unsafe extern "C" fn cvec_norm_zeros(mut s: *mut cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_norm_ones(mut s: *mut cvec_t) {
+pub unsafe extern "C" fn cvec_norm_ones(s: *mut cvec_t) {
     cvec_norm_set_all(s, 1.0f64 as smpl_t);
 }
 /* * set all phase elements to a given value
@@ -316,8 +316,8 @@ pub unsafe extern "C" fn cvec_norm_ones(mut s: *mut cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_phas_set_all(mut s: *mut cvec_t,
-                                           mut val: smpl_t) {
+pub unsafe extern "C" fn cvec_phas_set_all(s: *mut cvec_t,
+                                           val: smpl_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).length {
@@ -331,7 +331,7 @@ pub unsafe extern "C" fn cvec_phas_set_all(mut s: *mut cvec_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_phas_zeros(mut s: *mut cvec_t) {
+pub unsafe extern "C" fn cvec_phas_zeros(s: *mut cvec_t) {
     cvec_phas_set_all(s, 0.0f64 as smpl_t);
 }
 /* * set all phase elements to one
@@ -340,7 +340,7 @@ pub unsafe extern "C" fn cvec_phas_zeros(mut s: *mut cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_phas_ones(mut s: *mut cvec_t) {
+pub unsafe extern "C" fn cvec_phas_ones(s: *mut cvec_t) {
     cvec_phas_set_all(s, 1.0f64 as smpl_t);
 }
 /* * set all norm and phas elements to zero
@@ -349,7 +349,7 @@ pub unsafe extern "C" fn cvec_phas_ones(mut s: *mut cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_zeros(mut s: *mut cvec_t) {
+pub unsafe extern "C" fn cvec_zeros(s: *mut cvec_t) {
     cvec_norm_zeros(s);
     cvec_phas_zeros(s);
 }
@@ -362,7 +362,7 @@ pub unsafe extern "C" fn cvec_zeros(mut s: *mut cvec_t) {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn cvec_logmag(mut s: *mut cvec_t, mut lambda: smpl_t) {
+pub unsafe extern "C" fn cvec_logmag(s: *mut cvec_t, lambda: smpl_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*s).length {

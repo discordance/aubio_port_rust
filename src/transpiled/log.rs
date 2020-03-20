@@ -109,9 +109,9 @@ static mut aubio_log_user_data: [*mut core::ffi::c_void; 5] =
 static mut aubio_log_buffer: [i8; 512] = [0; 512];
 /* * private function used by default by logging functions */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_default_log(mut level: sint_t,
-                                           mut message: *const char_t,
-                                           mut data: *mut core::ffi::c_void) {
+pub unsafe extern "C" fn aubio_default_log(level: sint_t,
+                                           message: *const char_t,
+                                           _data: *mut core::ffi::c_void) {
     let mut out: *mut FILE = 0 as *mut FILE;
     out = __stdoutp;
     if level == AUBIO_LOG_ERR as i32 ||
@@ -168,8 +168,8 @@ pub unsafe extern "C" fn aubio_default_log(mut level: sint_t,
 /* Logging */
 /* * internal logging function, defined in utils/log.c */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_log(mut level: sint_t, mut fmt: *const char_t,
-                                   mut args: ...) -> uint_t {
+pub unsafe extern "C" fn aubio_log(level: sint_t, fmt: *const char_t,
+                                   args: ...) -> uint_t {
     let mut fun: aubio_log_function_t = None;
     let mut args_0: ::std::ffi::VaListImpl;
     args_0 = args.clone();
@@ -224,10 +224,10 @@ pub unsafe extern "C" fn aubio_log_reset() {
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_log_set_level_function(mut level: sint_t,
-                                                      mut fun:
+pub unsafe extern "C" fn aubio_log_set_level_function(level: sint_t,
+                                                      fun:
                                                           aubio_log_function_t,
-                                                      mut data:
+                                                      data:
                                                           *mut core::ffi::c_void)
  -> aubio_log_function_t {
     let mut old: aubio_log_function_t = None;
@@ -298,8 +298,8 @@ pub unsafe extern "C" fn aubio_log_set_level_function(mut level: sint_t,
 
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_log_set_function(mut fun: aubio_log_function_t,
-                                                mut data: *mut core::ffi::c_void) {
+pub unsafe extern "C" fn aubio_log_set_function(fun: aubio_log_function_t,
+                                                data: *mut core::ffi::c_void) {
     let mut i: uint_t = 0 as i32 as uint_t;
     i = 0 as i32 as uint_t;
     while i < AUBIO_LOG_LAST_LEVEL as i32 as u32 {

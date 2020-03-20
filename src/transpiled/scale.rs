@@ -173,10 +173,10 @@ pub type aubio_scale_t = _aubio_scale_t;
      bool outint;
      */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_scale(mut ilow: smpl_t, mut ihig: smpl_t,
-                                         mut olow: smpl_t, mut ohig: smpl_t)
+pub unsafe extern "C" fn new_aubio_scale(ilow: smpl_t, ihig: smpl_t,
+                                         olow: smpl_t, ohig: smpl_t)
  -> *mut aubio_scale_t {
-    let mut s: *mut aubio_scale_t =
+    let s: *mut aubio_scale_t =
         calloc(::std::mem::size_of::<aubio_scale_t>() as u64,
                1 as i32 as u64) as *mut aubio_scale_t;
     aubio_scale_set_limits(s, ilow, ihig, olow, ohig);
@@ -188,7 +188,7 @@ pub unsafe extern "C" fn new_aubio_scale(mut ilow: smpl_t, mut ihig: smpl_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_scale(mut s: *mut aubio_scale_t) {
+pub unsafe extern "C" fn del_aubio_scale(s: *mut aubio_scale_t) {
     free(s as *mut core::ffi::c_void);
 }
 /* * modify scale parameters after object creation
@@ -202,12 +202,12 @@ pub unsafe extern "C" fn del_aubio_scale(mut s: *mut aubio_scale_t) {
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_scale_set_limits(mut s: *mut aubio_scale_t,
-                                                mut ilow: smpl_t,
-                                                mut ihig: smpl_t,
-                                                mut olow: smpl_t,
-                                                mut ohig: smpl_t) -> uint_t {
+                                                ilow: smpl_t,
+                                                ihig: smpl_t,
+                                                olow: smpl_t,
+                                                ohig: smpl_t) -> uint_t {
     let mut inputrange: smpl_t = ihig - ilow;
-    let mut outputrange: smpl_t = ohig - olow;
+    let outputrange: smpl_t = ohig - olow;
     (*s).ilow = ilow;
     (*s).ihig = ihig;
     (*s).olow = olow;
@@ -229,8 +229,8 @@ pub unsafe extern "C" fn aubio_scale_set_limits(mut s: *mut aubio_scale_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_scale_do(mut s: *mut aubio_scale_t,
-                                        mut input: *mut fvec_t) {
+pub unsafe extern "C" fn aubio_scale_do(s: *mut aubio_scale_t,
+                                        input: *mut fvec_t) {
     let mut j: uint_t = 0;
     j = 0 as i32 as uint_t;
     while j < (*input).length {
