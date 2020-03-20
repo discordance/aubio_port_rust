@@ -1,0 +1,15 @@
+[package]
+name = "aubio_port_rs"
+version = "0.0.1"
+authors = ["discordance <aymeric.nunge@gmail.com>"]
+edition = "2018"
+publish = false
+autobins = false
+
+[lib]
+name = "aubio_port_rs"
+crate-type = ["staticlib", "rlib"]
+
+[dev-dependencies]
+hound = "3.4.0"
+sample = "0.10.0"
