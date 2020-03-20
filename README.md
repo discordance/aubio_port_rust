@@ -1,4 +1,4 @@
-# Aubio Rust port via c2rust
+# Aubio port in Rust via c2rust
 
 Porting some Aubio library modules in pure (unsafe) Rust via __c2rust__.
 The goal is to be as standalone as it can be (no libc / no static or dymamic lib)
