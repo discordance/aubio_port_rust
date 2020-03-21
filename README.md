@@ -8,10 +8,10 @@ We try to provide an idiomatic rust wrapper around the libs.
 
 Rust wrappers until now:
 
-[X] - Onset detector
-[X] - Tempo(BPM) detector
-[X] - Phase Vocoder
-[ ] - Everything else ...
+- [X] Onset detector
+- [X] Tempo(BPM) detector
+- [X] Phase Vocoder
+- [ ] Everything else ...
 
 ## Use with cargo
 
