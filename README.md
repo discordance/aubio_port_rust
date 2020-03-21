@@ -13,7 +13,7 @@ We try to provide an idiomatic rust wrapper around the libs.
 git = "https://github.com/discordance/aubio_port_rust.git"
 ```
 
-## Example to use the Onset detector
+## Example: Onset detector
 
 ```rust
 use aubio_port_rs::onset::{OnsetMode, Onset};
