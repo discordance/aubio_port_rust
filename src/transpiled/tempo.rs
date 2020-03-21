@@ -710,11 +710,11 @@ pub type aubio_tempo_t = _aubio_tempo_t;
 /* execute tempo detection function on iput buffer */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_do(mut o: *mut aubio_tempo_t,
-                                        mut input: *const fvec_t,
-                                        mut tempo: *mut fvec_t) {
+                                        input: *const fvec_t,
+                                        tempo: *mut fvec_t) {
     let mut i: uint_t = 0;
-    let mut winlen: uint_t = (*o).winlen;
-    let mut step: uint_t = (*o).step;
+    let winlen: uint_t = (*o).winlen;
+    let step: uint_t = (*o).step;
     let mut thresholded: *mut fvec_t = 0 as *mut fvec_t;
     aubio_pvoc_do((*o).pv, input, (*o).fftgrain);
     aubio_specdesc_do((*o).od, (*o).fftgrain, (*o).of);
@@ -798,7 +798,7 @@ pub unsafe extern "C" fn aubio_tempo_do(mut o: *mut aubio_tempo_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_last(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_last(o: *mut aubio_tempo_t)
  -> uint_t {
     return (*o).last_beat.wrapping_add((*o).delay as u32);
 }
@@ -808,7 +808,7 @@ pub unsafe extern "C" fn aubio_tempo_get_last(mut o: *mut aubio_tempo_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_last_s(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_last_s(o: *mut aubio_tempo_t)
  -> smpl_t {
     return aubio_tempo_get_last(o) as f32 /
                (*o).samplerate as smpl_t;
@@ -819,7 +819,7 @@ pub unsafe extern "C" fn aubio_tempo_get_last_s(mut o: *mut aubio_tempo_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_last_ms(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_last_ms(o: *mut aubio_tempo_t)
  -> smpl_t {
     return (aubio_tempo_get_last_s(o) as f64 * 1000.0f64) as
                smpl_t;
@@ -834,7 +834,7 @@ pub unsafe extern "C" fn aubio_tempo_get_last_ms(mut o: *mut aubio_tempo_t)
  */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_set_delay(mut o: *mut aubio_tempo_t,
-                                               mut delay: sint_t) -> uint_t {
+                                               delay: sint_t) -> uint_t {
     (*o).delay = delay;
     return AUBIO_OK as i32 as uint_t;
 }
@@ -848,7 +848,7 @@ pub unsafe extern "C" fn aubio_tempo_set_delay(mut o: *mut aubio_tempo_t,
  */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_set_delay_s(mut o: *mut aubio_tempo_t,
-                                                 mut delay: smpl_t)
+                                                 delay: smpl_t)
  -> uint_t {
     (*o).delay = (delay * (*o).samplerate as f32) as sint_t;
     return AUBIO_OK as i32 as uint_t;
@@ -862,8 +862,8 @@ pub unsafe extern "C" fn aubio_tempo_set_delay_s(mut o: *mut aubio_tempo_t,
 
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_set_delay_ms(mut o: *mut aubio_tempo_t,
-                                                  mut delay: smpl_t)
+pub unsafe extern "C" fn aubio_tempo_set_delay_ms(o: *mut aubio_tempo_t,
+                                                  delay: smpl_t)
  -> uint_t {
     return aubio_tempo_set_delay_s(o,
                                    (delay as f64 / 1000.0f64) as
@@ -877,7 +877,7 @@ pub unsafe extern "C" fn aubio_tempo_set_delay_ms(mut o: *mut aubio_tempo_t,
 
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_delay(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_delay(o: *mut aubio_tempo_t)
  -> uint_t {
     return (*o).delay as uint_t;
 }
@@ -889,7 +889,7 @@ pub unsafe extern "C" fn aubio_tempo_get_delay(mut o: *mut aubio_tempo_t)
 
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_delay_s(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_delay_s(o: *mut aubio_tempo_t)
  -> smpl_t {
     return (*o).delay as f32 / (*o).samplerate as smpl_t;
 }
@@ -901,7 +901,7 @@ pub unsafe extern "C" fn aubio_tempo_get_delay_s(mut o: *mut aubio_tempo_t)
 
  */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_delay_ms(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_delay_ms(o: *mut aubio_tempo_t)
  -> smpl_t {
     return (aubio_tempo_get_delay_s(o) as f64 * 1000.0f64) as
                smpl_t;
@@ -916,7 +916,7 @@ pub unsafe extern "C" fn aubio_tempo_get_delay_ms(mut o: *mut aubio_tempo_t)
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_set_silence(mut o: *mut aubio_tempo_t,
-                                                 mut silence: smpl_t)
+                                                 silence: smpl_t)
  -> uint_t {
     (*o).silence = silence;
     return AUBIO_OK as i32 as uint_t;
@@ -929,7 +929,7 @@ pub unsafe extern "C" fn aubio_tempo_set_silence(mut o: *mut aubio_tempo_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_silence(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_silence(o: *mut aubio_tempo_t)
  -> smpl_t {
     return (*o).silence;
 }
@@ -943,7 +943,7 @@ pub unsafe extern "C" fn aubio_tempo_get_silence(mut o: *mut aubio_tempo_t)
 */
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_set_threshold(mut o: *mut aubio_tempo_t,
-                                                   mut threshold: smpl_t)
+                                                   threshold: smpl_t)
  -> uint_t {
     (*o).threshold = threshold;
     aubio_peakpicker_set_threshold((*o).pp, (*o).threshold);
@@ -957,7 +957,7 @@ pub unsafe extern "C" fn aubio_tempo_set_threshold(mut o: *mut aubio_tempo_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_threshold(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_threshold(o: *mut aubio_tempo_t)
  -> smpl_t {
     return (*o).threshold;
 }
@@ -973,10 +973,10 @@ pub unsafe extern "C" fn aubio_tempo_get_threshold(mut o: *mut aubio_tempo_t)
 */
 /* Allocate memory for an tempo detection */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_tempo(mut tempo_mode: *const char_t,
-                                         mut buf_size: uint_t,
-                                         mut hop_size: uint_t,
-                                         mut samplerate: uint_t)
+pub unsafe extern "C" fn new_aubio_tempo(tempo_mode: *const char_t,
+                                         buf_size: uint_t,
+                                         hop_size: uint_t,
+                                         samplerate: uint_t)
  -> *mut aubio_tempo_t {
     let mut o: *mut aubio_tempo_t =
         calloc(::std::mem::size_of::<aubio_tempo_t>() as u64,
@@ -1073,7 +1073,7 @@ pub unsafe extern "C" fn new_aubio_tempo(mut tempo_mode: *const char_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_bpm(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_bpm(o: *mut aubio_tempo_t)
  -> smpl_t {
     return aubio_beattracking_get_bpm((*o).bt);
 }
@@ -1086,7 +1086,7 @@ pub unsafe extern "C" fn aubio_tempo_get_bpm(mut o: *mut aubio_tempo_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_period(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_period(o: *mut aubio_tempo_t)
  -> smpl_t {
     return aubio_beattracking_get_period((*o).bt);
 }
@@ -1099,7 +1099,7 @@ pub unsafe extern "C" fn aubio_tempo_get_period(mut o: *mut aubio_tempo_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_period_s(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_period_s(o: *mut aubio_tempo_t)
  -> smpl_t {
     return aubio_beattracking_get_period_s((*o).bt);
 }
@@ -1112,7 +1112,7 @@ pub unsafe extern "C" fn aubio_tempo_get_period_s(mut o: *mut aubio_tempo_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_confidence(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_confidence(o: *mut aubio_tempo_t)
  -> smpl_t {
     return aubio_beattracking_get_confidence((*o).bt);
 }
@@ -1126,10 +1126,10 @@ pub unsafe extern "C" fn aubio_tempo_get_confidence(mut o: *mut aubio_tempo_t)
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_was_tatum(mut o: *mut aubio_tempo_t)
  -> uint_t {
-    let mut last_tatum_distance: uint_t =
+    let last_tatum_distance: uint_t =
         (*o).total_frames.wrapping_sub((*o).last_tatum);
-    let mut beat_period: smpl_t = aubio_tempo_get_period(o);
-    let mut tatum_period: smpl_t =
+    let beat_period: smpl_t = aubio_tempo_get_period(o);
+    let tatum_period: smpl_t =
         beat_period / (*o).tatum_signature as f32;
     if last_tatum_distance < (*o).hop_size {
         (*o).last_tatum = (*o).last_beat;
@@ -1153,7 +1153,7 @@ pub unsafe extern "C" fn aubio_tempo_was_tatum(mut o: *mut aubio_tempo_t)
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_tempo_get_last_tatum(mut o: *mut aubio_tempo_t)
+pub unsafe extern "C" fn aubio_tempo_get_last_tatum(o: *mut aubio_tempo_t)
  -> smpl_t {
     return (*o).last_tatum as smpl_t - (*o).delay as f32;
 }
@@ -1166,7 +1166,7 @@ pub unsafe extern "C" fn aubio_tempo_get_last_tatum(mut o: *mut aubio_tempo_t)
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_set_tatum_signature(mut o:
                                                              *mut aubio_tempo_t,
-                                                         mut signature:
+                                                         signature:
                                                              uint_t)
  -> uint_t {
     if signature < 1 as i32 as u32 ||
@@ -1183,7 +1183,7 @@ pub unsafe extern "C" fn aubio_tempo_set_tatum_signature(mut o:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_tempo(mut o: *mut aubio_tempo_t) {
+pub unsafe extern "C" fn del_aubio_tempo(o: *mut aubio_tempo_t) {
     if !(*o).od.is_null() { del_aubio_specdesc((*o).od); }
     if !(*o).bt.is_null() { del_aubio_beattracking((*o).bt); }
     if !(*o).pp.is_null() { del_aubio_peakpicker((*o).pp); }

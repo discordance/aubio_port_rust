@@ -288,9 +288,9 @@ pub type aubio_beattracking_t = _aubio_beattracking_t;
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn new_aubio_beattracking(mut winlen: uint_t,
-                                                mut hop_size: uint_t,
-                                                mut samplerate: uint_t)
+pub unsafe extern "C" fn new_aubio_beattracking(winlen: uint_t,
+                                                hop_size: uint_t,
+                                                samplerate: uint_t)
  -> *mut aubio_beattracking_t {
     let mut p: *mut aubio_beattracking_t =
         calloc(::std::mem::size_of::<aubio_beattracking_t>() as u64,
@@ -298,19 +298,19 @@ pub unsafe extern "C" fn new_aubio_beattracking(mut winlen: uint_t,
             *mut aubio_beattracking_t;
     let mut i: uint_t = 0 as i32 as uint_t;
     /* default value for rayleigh weighting - sets preferred tempo to 120bpm */
-    let mut rayparam: smpl_t =
+    let rayparam: smpl_t =
         (60.0f64 * samplerate as f64 / 120.0f64 /
              hop_size as f64) as smpl_t;
-    let mut dfwvnorm: smpl_t =
+    let dfwvnorm: smpl_t =
         expf(logf(2.0f64 as f32) / rayparam *
                  winlen.wrapping_add(2 as i32 as u32) as
                      f32);
     /* length over which beat period is found [128] */
-    let mut laglen: uint_t =
+    let laglen: uint_t =
         winlen.wrapping_div(4 as i32 as u32);
     /* step increment - both in detection function samples -i.e. 11.6ms or
    * 1 onset frame [128] */
-    let mut step: uint_t =
+    let step: uint_t =
         winlen.wrapping_div(4 as i32 as
                                 u32); /* 1.5 seconds */
     (*p).hop_size = hop_size; // constthresh empirically derived!
@@ -361,7 +361,7 @@ pub unsafe extern "C" fn new_aubio_beattracking(mut winlen: uint_t,
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn del_aubio_beattracking(mut p:
+pub unsafe extern "C" fn del_aubio_beattracking(p:
                                                     *mut aubio_beattracking_t) {
     del_fvec((*p).rwv);
     del_fvec((*p).gwv);
@@ -384,13 +384,13 @@ pub unsafe extern "C" fn del_aubio_beattracking(mut p:
 #[no_mangle]
 pub unsafe extern "C" fn aubio_beattracking_do(mut bt:
                                                    *mut aubio_beattracking_t,
-                                               mut dfframe: *const fvec_t,
-                                               mut output: *mut fvec_t) {
+                                               dfframe: *const fvec_t,
+                                               output: *mut fvec_t) {
     let mut i: uint_t = 0;
     let mut k: uint_t = 0;
-    let mut step: uint_t = (*bt).step;
-    let mut laglen: uint_t = (*(*bt).rwv).length;
-    let mut winlen: uint_t = (*(*bt).dfwv).length;
+    let step: uint_t = (*bt).step;
+    let laglen: uint_t = (*(*bt).rwv).length;
+    let winlen: uint_t = (*(*bt).dfwv).length;
     let mut maxindex: uint_t = 0 as i32 as uint_t;
     //number of harmonics in shift invariant comb filterbank
     let mut numelem: uint_t =
@@ -540,8 +540,8 @@ pub unsafe extern "C" fn aubio_beattracking_do(mut bt:
 */
 /* * define to 1 to print out tracking difficulties */
 #[no_mangle]
-pub unsafe extern "C" fn fvec_gettimesig(mut acf: *mut fvec_t,
-                                         mut acflen: uint_t, mut gp: uint_t)
+pub unsafe extern "C" fn fvec_gettimesig(acf: *mut fvec_t,
+                                         acflen: uint_t, gp: uint_t)
  -> uint_t {
     let mut k: sint_t = 0 as i32;
     let mut three_energy: smpl_t = 0.0f64 as smpl_t;
@@ -616,14 +616,14 @@ pub unsafe extern "C" fn aubio_beattracking_checkstate(mut bt:
     let mut flagstep: uint_t = (*bt).flagstep;
     let mut gp: smpl_t = (*bt).gp;
     let mut bp: smpl_t = (*bt).bp;
-    let mut rp: smpl_t = (*bt).rp;
+    let rp: smpl_t = (*bt).rp;
     let mut rp1: smpl_t = (*bt).rp1;
     let mut rp2: smpl_t = (*bt).rp2;
-    let mut laglen: uint_t = (*(*bt).rwv).length;
-    let mut acflen: uint_t = (*(*bt).acf).length;
-    let mut step: uint_t = (*bt).step;
-    let mut acf: *mut fvec_t = (*bt).acf;
-    let mut acfout: *mut fvec_t = (*bt).acfout;
+    let laglen: uint_t = (*(*bt).rwv).length;
+    let acflen: uint_t = (*(*bt).acf).length;
+    let step: uint_t = (*bt).step;
+    let acf: *mut fvec_t = (*bt).acf;
+    let acfout: *mut fvec_t = (*bt).acfout;
     if gp != 0. {
         // compute shift invariant comb filterbank
         fvec_zeros(acfout);
@@ -769,7 +769,7 @@ pub unsafe extern "C" fn aubio_beattracking_checkstate(mut bt:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_beattracking_get_period(mut bt:
+pub unsafe extern "C" fn aubio_beattracking_get_period(bt:
                                                            *const aubio_beattracking_t)
  -> smpl_t {
     return (*bt).hop_size as f32 * (*bt).bp;
@@ -783,7 +783,7 @@ pub unsafe extern "C" fn aubio_beattracking_get_period(mut bt:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_beattracking_get_period_s(mut bt:
+pub unsafe extern "C" fn aubio_beattracking_get_period_s(bt:
                                                              *const aubio_beattracking_t)
  -> smpl_t {
     return aubio_beattracking_get_period(bt) / (*bt).samplerate as smpl_t;
@@ -797,7 +797,7 @@ pub unsafe extern "C" fn aubio_beattracking_get_period_s(mut bt:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_beattracking_get_bpm(mut bt:
+pub unsafe extern "C" fn aubio_beattracking_get_bpm(bt:
                                                         *const aubio_beattracking_t)
  -> smpl_t {
     if (*bt).bp != 0 as i32 as f32 {
@@ -815,11 +815,11 @@ pub unsafe extern "C" fn aubio_beattracking_get_bpm(mut bt:
 
 */
 #[no_mangle]
-pub unsafe extern "C" fn aubio_beattracking_get_confidence(mut bt:
+pub unsafe extern "C" fn aubio_beattracking_get_confidence(bt:
                                                                *const aubio_beattracking_t)
  -> smpl_t {
     if (*bt).gp != 0. {
-        let mut acf_sum: smpl_t = fvec_sum((*bt).acfout);
+        let acf_sum: smpl_t = fvec_sum((*bt).acfout);
         if acf_sum as f64 != 0.0f64 {
             return fvec_quadratic_peak_mag((*bt).acfout, (*bt).gp) / acf_sum
         }
