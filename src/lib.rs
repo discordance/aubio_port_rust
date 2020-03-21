@@ -11,3 +11,4 @@ mod transpiled;
 // re export
 pub mod pvoc;
 pub mod onset;
+pub mod tempo;

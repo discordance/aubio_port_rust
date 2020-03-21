@@ -1,5 +1,4 @@
 use crate::transpiled::onset::*;
-
 use std::ptr;
 
 pub enum OnsetMode {

@@ -1,20 +1,20 @@
-use ::libc;
+use crate::transpiled::peakpicker::aubio_peakpicker_t;
+use crate::transpiled::phasevoc::aubio_pvoc_t;
+use crate::transpiled::specdesc::aubio_specdesc_t;
+use crate::transpiled::beattracking::aubio_beattracking_t;
+
 extern "C" {
-    pub type _aubio_specdesc_t;
-    pub type _aubio_beattracking_t;
-    pub type _aubio_pvoc_t;
-    pub type _aubio_peakpicker_t;
     #[no_mangle]
-    fn calloc(_: libc::c_ulong, _: libc::c_ulong) -> *mut libc::c_void;
+    fn calloc(_: u64, _: u64) -> *mut core::ffi::c_void;
     #[no_mangle]
-    fn free(_: *mut libc::c_void);
+    fn free(_: *mut core::ffi::c_void);
     #[no_mangle]
-    fn floorf(_: libc::c_float) -> libc::c_float;
+    fn floorf(_: f32) -> f32;
     #[no_mangle]
-    fn strcmp(_: *const libc::c_char, _: *const libc::c_char) -> libc::c_int;
+    fn strcmp(_: *const i8, _: *const i8) -> i32;
     #[no_mangle]
-    fn strncpy(_: *mut libc::c_char, _: *const libc::c_char, _: libc::c_ulong)
-     -> *mut libc::c_char;
+    fn strncpy(_: *mut i8, _: *const i8, _: u64)
+     -> *mut i8;
     /* * fvec_t buffer creation function
 
   \param length the length of the buffer to create
@@ -247,14 +247,14 @@ extern "C" {
 */
 /* * defined to 1 if aubio is compiled in double precision */
 /* * short sample format (32 or 64 bits) */
-pub type smpl_t = libc::c_float;
+pub type smpl_t = f32;
 /* * print format for sample in double precision */
 /* * unsigned integer */
-pub type uint_t = libc::c_uint;
+pub type uint_t = u32;
 /* * signed integer */
-pub type sint_t = libc::c_int;
+pub type sint_t = i32;
 /* * character */
-pub type char_t = libc::c_char;
+pub type char_t = i8;
 /*
   Copyright (C) 2003-2015 Paul Brossier <piem@aubio.org>
 
@@ -318,7 +318,7 @@ pub struct fvec_t {
     pub length: uint_t,
     pub data: *mut smpl_t,
 }
-pub type C2RustUnnamed = libc::c_uint;
+pub type C2RustUnnamed = u32;
 pub const AUBIO_FAIL: C2RustUnnamed = 1;
 pub const AUBIO_OK: C2RustUnnamed = 0;
 /*
@@ -357,7 +357,7 @@ pub const AUBIO_OK: C2RustUnnamed = 0;
 
 */
 /* * list of logging levels */
-pub type aubio_log_level = libc::c_uint;
+pub type aubio_log_level = u32;
 /* *< number of valid levels */
 /* *< warnings */
 pub const AUBIO_LOG_LAST_LEVEL: aubio_log_level = 5;
@@ -528,8 +528,6 @@ pub struct cvec_t {
   \example spectral/test-specdesc.c
 
 */
-/* * spectral description structure */
-pub type aubio_specdesc_t = _aubio_specdesc_t;
 /*
   Copyright (C) 2003-2015 Matthew Davies and Paul Brossier <piem@aubio.org>
 
@@ -567,8 +565,6 @@ pub type aubio_specdesc_t = _aubio_specdesc_t;
   \example tempo/test-beattracking.c
 
 */
-/* * beat tracking object */
-pub type aubio_beattracking_t = _aubio_beattracking_t;
 /*
   Copyright (C) 2003-2013 Paul Brossier <piem@aubio.org>
 
@@ -600,8 +596,6 @@ pub type aubio_beattracking_t = _aubio_beattracking_t;
   \example spectral/test-phasevoc.c
 
 */
-/* * phasevocoder object */
-pub type aubio_pvoc_t = _aubio_pvoc_t;
 /*
   Copyright (C) 2003-2013 Paul Brossier <piem@aubio.org>
 
@@ -628,8 +622,6 @@ pub type aubio_pvoc_t = _aubio_pvoc_t;
   \example onset/test-peakpicker.c
 
 */
-/* * peak-picker structure */
-pub type aubio_peakpicker_t = _aubio_peakpicker_t;
 /*
   Copyright (C) 2006-2009 Paul Brossier <piem@aubio.org>
 
@@ -731,11 +723,11 @@ pub unsafe extern "C" fn aubio_tempo_do(mut o: *mut aubio_tempo_t,
     onset->data[0] *= onset2->data[0];
   }*/
   /* execute every overlap_size*step */
-    if (*o).blockpos == step as libc::c_int - 1 as libc::c_int {
+    if (*o).blockpos == step as i32 - 1 as i32 {
         /* check dfframe */
         aubio_beattracking_do((*o).bt, (*o).dfframe, (*o).out);
         /* rotate dfframe */
-        i = 0 as libc::c_int as uint_t;
+        i = 0 as i32 as uint_t;
         while i < winlen.wrapping_sub(step) {
             *(*(*o).dfframe).data.offset(i as isize) =
                 *(*(*o).dfframe).data.offset(i.wrapping_add(step) as isize);
@@ -746,7 +738,7 @@ pub unsafe extern "C" fn aubio_tempo_do(mut o: *mut aubio_tempo_t,
             *(*(*o).dfframe).data.offset(i as isize) = 0.0f64 as smpl_t;
             i = i.wrapping_add(1)
         }
-        (*o).blockpos = -(1 as libc::c_int)
+        (*o).blockpos = -(1 as i32)
     }
     (*o).blockpos += 1;
     aubio_peakpicker_do((*o).pp, (*o).of, (*o).onset);
@@ -755,49 +747,49 @@ pub unsafe extern "C" fn aubio_tempo_do(mut o: *mut aubio_tempo_t,
     thresholded = aubio_peakpicker_get_thresholded_input((*o).pp);
     *(*(*o).dfframe).data.offset(winlen.wrapping_sub(step).wrapping_add((*o).blockpos
                                                                             as
-                                                                            libc::c_uint)
+                                                                            u32)
                                      as isize) =
-        *(*thresholded).data.offset(0 as libc::c_int as isize);
+        *(*thresholded).data.offset(0 as i32 as isize);
     /* end of second level loop */
-    *(*tempo).data.offset(0 as libc::c_int as isize) =
-        0 as libc::c_int as smpl_t; /* reset tactus */
+    *(*tempo).data.offset(0 as i32 as isize) =
+        0 as i32 as smpl_t; /* reset tactus */
     //i=0;
-    i = 1 as libc::c_int as uint_t;
-    while (i as libc::c_float) <
-              *(*(*o).out).data.offset(0 as libc::c_int as isize) {
+    i = 1 as i32 as uint_t;
+    while (i as f32) <
+              *(*(*o).out).data.offset(0 as i32 as isize) {
         /* if current frame is a predicted tactus */
-        if (*o).blockpos as libc::c_float ==
+        if (*o).blockpos as f32 ==
                floorf(*(*(*o).out).data.offset(i as isize)) {
-            *(*tempo).data.offset(0 as libc::c_int as isize) =
+            *(*tempo).data.offset(0 as i32 as isize) =
                 *(*(*o).out).data.offset(i as isize) -
                     floorf(*(*(*o).out).data.offset(i as
                                                         isize)); /* set tactus */
             /* test for silence */
             if aubio_silence_detection(input, (*o).silence) ==
-                   1 as libc::c_int as libc::c_uint {
-                *(*tempo).data.offset(0 as libc::c_int as isize) =
-                    0 as libc::c_int as smpl_t
+                   1 as i32 as u32 {
+                *(*tempo).data.offset(0 as i32 as isize) =
+                    0 as i32 as smpl_t
                 // unset beat if silent
             }
             (*o).last_beat =
                 (*o).total_frames.wrapping_add(floorf(((*(*tempo).data.offset(0
                                                                                   as
-                                                                                  libc::c_int
+                                                                                  i32
                                                                                   as
                                                                                   isize)
                                                             *
                                                             (*o).hop_size as
-                                                                libc::c_float)
-                                                           as libc::c_double +
+                                                                f32)
+                                                           as f64 +
                                                            0.5f64) as
-                                                          libc::c_float) as
+                                                          f32) as
                                                    uint_t);
             (*o).last_tatum = (*o).last_beat
         }
         i = i.wrapping_add(1)
     }
     (*o).total_frames =
-        ((*o).total_frames as libc::c_uint).wrapping_add((*o).hop_size) as
+        ((*o).total_frames as u32).wrapping_add((*o).hop_size) as
             uint_t as uint_t;
 }
 /* * get the time of the latest beat detected, in samples
@@ -808,7 +800,7 @@ pub unsafe extern "C" fn aubio_tempo_do(mut o: *mut aubio_tempo_t,
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_get_last(mut o: *mut aubio_tempo_t)
  -> uint_t {
-    return (*o).last_beat.wrapping_add((*o).delay as libc::c_uint);
+    return (*o).last_beat.wrapping_add((*o).delay as u32);
 }
 /* * get the time of the latest beat detected, in seconds
 
@@ -818,7 +810,7 @@ pub unsafe extern "C" fn aubio_tempo_get_last(mut o: *mut aubio_tempo_t)
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_get_last_s(mut o: *mut aubio_tempo_t)
  -> smpl_t {
-    return aubio_tempo_get_last(o) as libc::c_float /
+    return aubio_tempo_get_last(o) as f32 /
                (*o).samplerate as smpl_t;
 }
 /* * get the time of the latest beat detected, in milliseconds
@@ -829,7 +821,7 @@ pub unsafe extern "C" fn aubio_tempo_get_last_s(mut o: *mut aubio_tempo_t)
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_get_last_ms(mut o: *mut aubio_tempo_t)
  -> smpl_t {
-    return (aubio_tempo_get_last_s(o) as libc::c_double * 1000.0f64) as
+    return (aubio_tempo_get_last_s(o) as f64 * 1000.0f64) as
                smpl_t;
 }
 /* * set current delay
@@ -844,7 +836,7 @@ pub unsafe extern "C" fn aubio_tempo_get_last_ms(mut o: *mut aubio_tempo_t)
 pub unsafe extern "C" fn aubio_tempo_set_delay(mut o: *mut aubio_tempo_t,
                                                mut delay: sint_t) -> uint_t {
     (*o).delay = delay;
-    return AUBIO_OK as libc::c_int as uint_t;
+    return AUBIO_OK as i32 as uint_t;
 }
 /* * set current delay in seconds
 
@@ -858,8 +850,8 @@ pub unsafe extern "C" fn aubio_tempo_set_delay(mut o: *mut aubio_tempo_t,
 pub unsafe extern "C" fn aubio_tempo_set_delay_s(mut o: *mut aubio_tempo_t,
                                                  mut delay: smpl_t)
  -> uint_t {
-    (*o).delay = (delay * (*o).samplerate as libc::c_float) as sint_t;
-    return AUBIO_OK as libc::c_int as uint_t;
+    (*o).delay = (delay * (*o).samplerate as f32) as sint_t;
+    return AUBIO_OK as i32 as uint_t;
 }
 /* * set current delay
 
@@ -874,7 +866,7 @@ pub unsafe extern "C" fn aubio_tempo_set_delay_ms(mut o: *mut aubio_tempo_t,
                                                   mut delay: smpl_t)
  -> uint_t {
     return aubio_tempo_set_delay_s(o,
-                                   (delay as libc::c_double / 1000.0f64) as
+                                   (delay as f64 / 1000.0f64) as
                                        smpl_t);
 }
 /* * get current delay
@@ -899,7 +891,7 @@ pub unsafe extern "C" fn aubio_tempo_get_delay(mut o: *mut aubio_tempo_t)
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_get_delay_s(mut o: *mut aubio_tempo_t)
  -> smpl_t {
-    return (*o).delay as libc::c_float / (*o).samplerate as smpl_t;
+    return (*o).delay as f32 / (*o).samplerate as smpl_t;
 }
 /* * get current delay in ms
 
@@ -911,7 +903,7 @@ pub unsafe extern "C" fn aubio_tempo_get_delay_s(mut o: *mut aubio_tempo_t)
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_get_delay_ms(mut o: *mut aubio_tempo_t)
  -> smpl_t {
-    return (aubio_tempo_get_delay_s(o) as libc::c_double * 1000.0f64) as
+    return (aubio_tempo_get_delay_s(o) as f64 * 1000.0f64) as
                smpl_t;
 }
 /* * set tempo detection silence threshold
@@ -927,7 +919,7 @@ pub unsafe extern "C" fn aubio_tempo_set_silence(mut o: *mut aubio_tempo_t,
                                                  mut silence: smpl_t)
  -> uint_t {
     (*o).silence = silence;
-    return AUBIO_OK as libc::c_int as uint_t;
+    return AUBIO_OK as i32 as uint_t;
 }
 /* * get tempo detection silence threshold
 
@@ -955,7 +947,7 @@ pub unsafe extern "C" fn aubio_tempo_set_threshold(mut o: *mut aubio_tempo_t,
  -> uint_t {
     (*o).threshold = threshold;
     aubio_peakpicker_set_threshold((*o).pp, (*o).threshold);
-    return AUBIO_OK as libc::c_int as uint_t;
+    return AUBIO_OK as i32 as uint_t;
 }
 /* * get tempo peak picking threshold
 
@@ -987,45 +979,45 @@ pub unsafe extern "C" fn new_aubio_tempo(mut tempo_mode: *const char_t,
                                          mut samplerate: uint_t)
  -> *mut aubio_tempo_t {
     let mut o: *mut aubio_tempo_t =
-        calloc(::std::mem::size_of::<aubio_tempo_t>() as libc::c_ulong,
-               1 as libc::c_int as libc::c_ulong) as *mut aubio_tempo_t;
+        calloc(::std::mem::size_of::<aubio_tempo_t>() as u64,
+               1 as i32 as u64) as *mut aubio_tempo_t;
     let mut specdesc_func: [char_t; 1024] = [0; 1024];
     (*o).samplerate = samplerate;
     // check parameters are valid
-    if (hop_size as sint_t) < 1 as libc::c_int {
-        aubio_log(AUBIO_LOG_ERR as libc::c_int,
+    if (hop_size as sint_t) < 1 as i32 {
+        aubio_log(AUBIO_LOG_ERR as i32,
                   b"AUBIO ERROR: tempo: got hop size %d, but can not be < 1\n\x00"
-                      as *const u8 as *const libc::c_char, hop_size);
-    } else if (buf_size as sint_t) < 2 as libc::c_int {
-        aubio_log(AUBIO_LOG_ERR as libc::c_int,
+                      as *const u8 as *const i8, hop_size);
+    } else if (buf_size as sint_t) < 2 as i32 {
+        aubio_log(AUBIO_LOG_ERR as i32,
                   b"AUBIO ERROR: tempo: got window size %d, but can not be < 2\n\x00"
-                      as *const u8 as *const libc::c_char, buf_size);
+                      as *const u8 as *const i8, buf_size);
     } else if buf_size < hop_size {
-        aubio_log(AUBIO_LOG_ERR as libc::c_int,
+        aubio_log(AUBIO_LOG_ERR as i32,
                   b"AUBIO ERROR: tempo: hop size (%d) is larger than window size (%d)\n\x00"
-                      as *const u8 as *const libc::c_char, buf_size,
+                      as *const u8 as *const i8, buf_size,
                   hop_size);
-    } else if (samplerate as sint_t) < 1 as libc::c_int {
-        aubio_log(AUBIO_LOG_ERR as libc::c_int,
+    } else if (samplerate as sint_t) < 1 as i32 {
+        aubio_log(AUBIO_LOG_ERR as i32,
                   b"AUBIO ERROR: tempo: samplerate (%d) can not be < 1\n\x00"
-                      as *const u8 as *const libc::c_char, samplerate);
+                      as *const u8 as *const i8, samplerate);
     } else {
         /* length of observations, worth about 6 seconds */
         (*o).winlen =
-            aubio_next_power_of_two((5.8f64 * samplerate as libc::c_double /
-                                         hop_size as libc::c_double) as
+            aubio_next_power_of_two((5.8f64 * samplerate as f64 /
+                                         hop_size as f64) as
                                         uint_t);
-        if (*o).winlen < 4 as libc::c_int as libc::c_uint {
-            (*o).winlen = 4 as libc::c_int as uint_t
+        if (*o).winlen < 4 as i32 as u32 {
+            (*o).winlen = 4 as i32 as uint_t
         }
         (*o).step =
-            (*o).winlen.wrapping_div(4 as libc::c_int as libc::c_uint);
-        (*o).blockpos = 0 as libc::c_int;
+            (*o).winlen.wrapping_div(4 as i32 as u32);
+        (*o).blockpos = 0 as i32;
         (*o).threshold = 0.3f64 as smpl_t;
         (*o).silence = -90.0f64 as smpl_t;
-        (*o).total_frames = 0 as libc::c_int as uint_t;
-        (*o).last_beat = 0 as libc::c_int as uint_t;
-        (*o).delay = 0 as libc::c_int;
+        (*o).total_frames = 0 as i32 as uint_t;
+        (*o).last_beat = 0 as i32 as uint_t;
+        (*o).delay = 0 as i32;
         (*o).hop_size = hop_size;
         (*o).dfframe = new_fvec((*o).winlen);
         (*o).fftgrain = new_cvec(buf_size);
@@ -1034,25 +1026,25 @@ pub unsafe extern "C" fn new_aubio_tempo(mut tempo_mode: *const char_t,
         (*o).pp = new_aubio_peakpicker();
         aubio_peakpicker_set_threshold((*o).pp, (*o).threshold);
         if strcmp(tempo_mode,
-                  b"default\x00" as *const u8 as *const libc::c_char) ==
-               0 as libc::c_int {
+                  b"default\x00" as *const u8 as *const i8) ==
+               0 as i32 {
             strncpy(specdesc_func.as_mut_ptr(),
-                    b"specflux\x00" as *const u8 as *const libc::c_char,
-                    (1024 as libc::c_int - 1 as libc::c_int) as
-                        libc::c_ulong);
+                    b"specflux\x00" as *const u8 as *const i8,
+                    (1024 as i32 - 1 as i32) as
+                        u64);
         } else {
             strncpy(specdesc_func.as_mut_ptr(), tempo_mode,
-                    (1024 as libc::c_int - 1 as libc::c_int) as
-                        libc::c_ulong);
-            specdesc_func[(1024 as libc::c_int - 1 as libc::c_int) as usize] =
+                    (1024 as i32 - 1 as i32) as
+                        u64);
+            specdesc_func[(1024 as i32 - 1 as i32) as usize] =
                 '\u{0}' as i32 as char_t
         }
         (*o).od = new_aubio_specdesc(specdesc_func.as_mut_ptr(), buf_size);
-        (*o).of = new_fvec(1 as libc::c_int as uint_t);
+        (*o).of = new_fvec(1 as i32 as uint_t);
         (*o).bt =
             new_aubio_beattracking((*o).winlen, (*o).hop_size,
                                    (*o).samplerate);
-        (*o).onset = new_fvec(1 as libc::c_int as uint_t);
+        (*o).onset = new_fvec(1 as i32 as uint_t);
         /*if (usedoubled)    {
     o2 = new_aubio_specdesc(type_onset2,buffer_size);
     onset2 = new_fvec(1);
@@ -1061,12 +1053,12 @@ pub unsafe extern "C" fn new_aubio_tempo(mut tempo_mode: *const char_t,
                (*o).out.is_null() || (*o).pv.is_null() || (*o).pp.is_null() ||
                (*o).od.is_null() || (*o).of.is_null() || (*o).bt.is_null() ||
                (*o).onset.is_null() {
-            aubio_log(AUBIO_LOG_ERR as libc::c_int,
+            aubio_log(AUBIO_LOG_ERR as i32,
                       b"AUBIO ERROR: tempo: failed creating tempo object\n\x00"
-                          as *const u8 as *const libc::c_char);
+                          as *const u8 as *const i8);
         } else {
-            (*o).last_tatum = 0 as libc::c_int as uint_t;
-            (*o).tatum_signature = 4 as libc::c_int as uint_t;
+            (*o).last_tatum = 0 as i32 as uint_t;
+            (*o).tatum_signature = 4 as i32 as uint_t;
             return o
         }
     }
@@ -1138,22 +1130,22 @@ pub unsafe extern "C" fn aubio_tempo_was_tatum(mut o: *mut aubio_tempo_t)
         (*o).total_frames.wrapping_sub((*o).last_tatum);
     let mut beat_period: smpl_t = aubio_tempo_get_period(o);
     let mut tatum_period: smpl_t =
-        beat_period / (*o).tatum_signature as libc::c_float;
+        beat_period / (*o).tatum_signature as f32;
     if last_tatum_distance < (*o).hop_size {
         (*o).last_tatum = (*o).last_beat;
-        return 2 as libc::c_int as uint_t
+        return 2 as i32 as uint_t
     } else {
-        if last_tatum_distance as libc::c_float > tatum_period {
+        if last_tatum_distance as f32 > tatum_period {
             if last_tatum_distance.wrapping_add((*o).hop_size) as
-                   libc::c_float > beat_period {
+                   f32 > beat_period {
                 // next beat is too close, pass
-                return 0 as libc::c_int as uint_t
+                return 0 as i32 as uint_t
             }
             (*o).last_tatum = (*o).total_frames;
-            return 1 as libc::c_int as uint_t
+            return 1 as i32 as uint_t
         }
     }
-    return 0 as libc::c_int as uint_t;
+    return 0 as i32 as uint_t;
 }
 /* * get position of last_tatum, in samples
 
@@ -1163,7 +1155,7 @@ pub unsafe extern "C" fn aubio_tempo_was_tatum(mut o: *mut aubio_tempo_t)
 #[no_mangle]
 pub unsafe extern "C" fn aubio_tempo_get_last_tatum(mut o: *mut aubio_tempo_t)
  -> smpl_t {
-    return (*o).last_tatum as smpl_t - (*o).delay as libc::c_float;
+    return (*o).last_tatum as smpl_t - (*o).delay as f32;
 }
 /* * set number of tatum per beat
 
@@ -1177,12 +1169,12 @@ pub unsafe extern "C" fn aubio_tempo_set_tatum_signature(mut o:
                                                          mut signature:
                                                              uint_t)
  -> uint_t {
-    if signature < 1 as libc::c_int as libc::c_uint ||
-           signature > 64 as libc::c_int as libc::c_uint {
-        return AUBIO_FAIL as libc::c_int as uint_t
+    if signature < 1 as i32 as u32 ||
+           signature > 64 as i32 as u32 {
+        return AUBIO_FAIL as i32 as uint_t
     } else {
         (*o).tatum_signature = signature;
-        return AUBIO_OK as libc::c_int as uint_t
+        return AUBIO_OK as i32 as uint_t
     };
 }
 /* * delete tempo detection object
@@ -1201,5 +1193,5 @@ pub unsafe extern "C" fn del_aubio_tempo(mut o: *mut aubio_tempo_t) {
     if !(*o).fftgrain.is_null() { del_cvec((*o).fftgrain); }
     if !(*o).dfframe.is_null() { del_fvec((*o).dfframe); }
     if !(*o).onset.is_null() { del_fvec((*o).onset); }
-    free(o as *mut libc::c_void);
+    free(o as *mut core::ffi::c_void);
 }

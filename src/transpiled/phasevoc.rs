@@ -1,6 +1,4 @@
 use crate::transpiled::fft::aubio_fft_t;
-
-
 use crate::transpiled::log::aubio_log;
 
 extern "C" {

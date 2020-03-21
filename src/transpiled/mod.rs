@@ -13,5 +13,7 @@ pub mod awhitening;
 pub mod filter;
 pub mod biquad;
 pub mod peakpicker;
+pub mod beattracking;
+pub mod tempo;
 pub mod onset;
 pub mod statistics;
